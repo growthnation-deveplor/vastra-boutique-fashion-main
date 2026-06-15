@@ -1,3 +1,0 @@
-User-agent: *
-Allow: /
-Sitemap: https://vastrabutique.shop/sitemap.xml
