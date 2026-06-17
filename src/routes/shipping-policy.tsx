@@ -29,7 +29,7 @@ function ShippingPolicyPage() {
 
         <Card className="luxury-panel rounded-2xl p-6 sm:p-8 border-border/50 flex flex-col gap-6 text-sm leading-8 font-medium text-muted-foreground">
           <p className="text-foreground font-semibold">
-            Thank you for visiting and shopping at Vastra Boutique. Below are the terms and conditions that constitute our Shipping Policy.
+            Thank you for visiting and shopping at Vastra Butique. Below are the terms and conditions that constitute our Shipping Policy.
           </p>
 
           <div>

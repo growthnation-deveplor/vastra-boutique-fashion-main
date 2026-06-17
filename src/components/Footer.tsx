@@ -11,11 +11,13 @@ export const Footer: React.FC = () => {
         {/* Brand section */}
         <div className="flex flex-col gap-4">
           <Link to="/" className="flex items-center gap-3">
-            <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-border bg-card text-[10px] font-semibold tracking-[0.25em] text-primary shadow-sm">
-              VB
-            </div>
+            <img
+              src="/logo.png"
+              alt="Vastra Butique Logo"
+              className="h-10 w-10 shrink-0 rounded-full object-cover border border-border bg-card shadow-sm"
+            />
             <div>
-              <p className="text-lg font-bold text-foreground">Vastra Boutique</p>
+              <p className="text-lg font-bold text-foreground">Vastra Butique</p>
               <p className="text-[9px] uppercase tracking-[0.26em] text-muted-foreground">
                 Girls Fashion Boutique
               </p>
@@ -97,7 +99,7 @@ export const Footer: React.FC = () => {
               <span className="font-medium text-foreground mt-0.5">Soniya Sharma</span>
             </p>
             <a
-              href={`${whatsappUrl}?text=${encodeURIComponent("Hi Vastra Boutique, I need styling assistance.")}`}
+              href={`${whatsappUrl}?text=${encodeURIComponent("Hi Vastra Butique, I need styling assistance.")}`}
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center justify-center rounded-full bg-success/10 border border-success/30 px-4 py-2 text-xs font-semibold text-success hover:bg-success hover:text-white transition-all w-fit mt-1"
@@ -111,7 +113,7 @@ export const Footer: React.FC = () => {
       {/* Copyright */}
       <div className="border-t border-border/40 py-6 text-center text-xs text-muted-foreground/70 bg-card/40">
         <div className="container-shell flex flex-col gap-2 sm:flex-row sm:justify-between items-center">
-          <p>© {new Date().getFullYear()} Vastra Boutique. All Rights Reserved.</p>
+          <p>© {new Date().getFullYear()} Vastra Butique. All Rights Reserved.</p>
           <p className="flex items-center gap-1.5">
             Designed with Premium Quality & Comfort ✨
           </p>

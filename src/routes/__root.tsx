@@ -79,16 +79,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Vastra Boutique | Girls Fashion Boutique" },
+      { title: "Vastra Butique | Girls Fashion Boutique" },
       {
         name: "description",
         content:
-          "Vastra Boutique offers trendy dresses, ethnic wear, western outfits, party wear and boutique fashion for stylish girls.",
+          "Vastra Butique offers trendy dresses, ethnic wear, western outfits, party wear and boutique fashion for stylish girls.",
       },
-      { name: "author", content: "Vastra Boutique" },
-      { name: "keywords", content: "girls fashion boutique, trendy dresses for girls, ethnic wear, western wear, party wear, Vastra Boutique" },
+      { name: "author", content: "Vastra Butique" },
+      { name: "keywords", content: "girls fashion boutique, trendy dresses for girls, ethnic wear, western wear, party wear, Vastra Butique" },
       { name: "robots", content: "index,follow" },
-      { property: "og:title", content: "Vastra Boutique | Girls Fashion Boutique" },
+      { property: "og:title", content: "Vastra Butique | Girls Fashion Boutique" },
       {
         property: "og:description",
         content:
@@ -97,15 +97,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { property: "og:url", content: siteUrl },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Vastra Boutique | Girls Fashion Boutique" },
+      { name: "twitter:title", content: "Vastra Butique | Girls Fashion Boutique" },
       {
         name: "twitter:description",
         content:
-          "Luxury-inspired boutique fashion for girls with WhatsApp-first ordering and stylish curated collections.",
+          "Luxury-inspired boutique fashion for girls with secure checkout and stylish curated collections.",
       },
-      { name: "description", content: "Vastra Boutique Showcase is a premium single-page website for a girls' fashion boutique." },
-      { property: "og:description", content: "Vastra Boutique Showcase is a premium single-page website for a girls' fashion boutique." },
-      { name: "twitter:description", content: "Vastra Boutique Showcase is a premium single-page website for a girls' fashion boutique." },
+      { name: "description", content: "Vastra Butique Showcase is a premium single-page website for a girls' fashion boutique." },
+      { property: "og:description", content: "Vastra Butique Showcase is a premium single-page website for a girls' fashion boutique." },
+      { name: "twitter:description", content: "Vastra Butique Showcase is a premium single-page website for a girls' fashion boutique." },
       { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/918a8cd6-e293-4477-94f8-4b2d2fe09f2f/id-preview-293e85c4--273ffc1c-6193-4f79-b86a-47fb0cfbcb15.lovable.app-1781179064005.png" },
       { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/918a8cd6-e293-4477-94f8-4b2d2fe09f2f/id-preview-293e85c4--273ffc1c-6193-4f79-b86a-47fb0cfbcb15.lovable.app-1781179064005.png" },
     ],
@@ -157,18 +157,6 @@ function RootComponent() {
             <Outlet />
           </main>
           <Footer />
-          
-          {/* Floating WhatsApp Widget */}
-          <a
-            href="https://wa.me/917976396802?text=Hi%20Vastra%20Boutique%2C%20I%20want%20to%20know%20more%20about%20your%20collection."
-            target="_blank"
-            rel="noreferrer"
-            aria-label="Chat with Vastra Boutique on WhatsApp"
-            className="animate-pulse-soft fixed bottom-5 right-5 z-50 inline-flex items-center gap-3 rounded-full bg-success px-5 py-3 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-luxury)] hover:scale-[1.02]"
-          >
-            <span className="inline-flex h-2.5 w-2.5 rounded-full bg-primary-foreground/90" />
-            WhatsApp Chat
-          </a>
         </div>
         <Toaster />
       </StoreProvider>

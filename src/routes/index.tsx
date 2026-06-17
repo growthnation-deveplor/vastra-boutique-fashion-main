@@ -1,7 +1,9 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import React, { useState, useEffect } from "react";
 import { useStore } from "../hooks/use-store";
 import { PRODUCTS, CATEGORIES, formatPrice, getDiscountPercent } from "../lib/products-db";
 import { Button } from "../components/ui/button";
+import { toast } from "sonner";
 const purpleLook = { url: "/images/hero/hero-purple-gown.jpeg" };
 const ivoryLook = { url: "/images/hero/hero-ivory-suit.jpeg" };
 const redKurta = { url: "/images/products/red-cotton-kurta-set.jpeg" };
@@ -18,7 +20,7 @@ const siteUrl = "https://vastrabutique.shop";
 const whatsappUrl = "https://wa.me/917976396802";
 const callUrl = "tel:+917976396802";
 const floatingMessage = encodeURIComponent(
-  "Hi Vastra Boutique, I want to know more about your collection."
+  "Hi Vastra Butique, I want to know more about your collection."
 );
 
 const highlights = [
@@ -136,7 +138,7 @@ const testimonials = [
 const boutiqueSchema = {
   "@context": "https://schema.org",
   "@type": "ClothingStore",
-  name: "Vastra Boutique",
+  name: "Vastra Butique",
   url: siteUrl,
   email: "Lekhrajsharma2129@gmail.com",
   telephone: "+91 7976396802",
@@ -155,13 +157,13 @@ const boutiqueSchema = {
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Vastra Boutique | Premium Girls Fashion Boutique" },
+      { title: "Vastra Butique | Premium Girls Fashion Boutique" },
       {
         name: "description",
         content:
-          "Shop premium girls fashion at Vastra Boutique — trendy dresses, ethnic wear, western wear, party looks and stylish boutique collections with online checkout.",
+          "Shop premium girls fashion at Vastra Butique — trendy dresses, ethnic wear, western wear, party looks and stylish boutique collections with online checkout.",
       },
-      { property: "og:title", content: "Vastra Boutique | Premium Girls Fashion Boutique" },
+      { property: "og:title", content: "Vastra Butique | Premium Girls Fashion Boutique" },
       {
         property: "og:description",
         content:
@@ -190,7 +192,29 @@ function SectionHeading({ eyebrow, title, text }: { eyebrow: string; title: stri
 }
 
 function Index() {
-  const { toggleWishlist, isInWishlist, addToCart } = useStore();
+  const { toggleWishlist, isInWishlist, addToCart, currentUser } = useStore();
+  const navigate = useNavigate();
+
+  const heroImages = [
+    purpleLook.url,
+    ivoryLook.url,
+    redKurta.url,
+    pinkKurta.url,
+    oliveSet.url,
+    magentaKids.url,
+    burgundyGown.url,
+    mintKids.url,
+    sageRomper.url,
+    navyDress.url,
+  ];
+
+  const [heroImageIdx, setHeroImageIdx] = useState(0);
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setHeroImageIdx((prev) => (prev + 1) % heroImages.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [heroImages.length]);
 
   // Grab trending outfits from database for the products slider
   const trendingOutfits = PRODUCTS.filter((p) => p.badge === "trending" || p.badge === "hot").slice(0, 6);
@@ -204,6 +228,11 @@ function Index() {
   const handleQuickAdd = (e: React.MouseEvent, product: typeof PRODUCTS[0]) => {
     e.preventDefault();
     e.stopPropagation();
+    if (!currentUser) {
+      toast.warning("Please sign in or register to add items to your cart.");
+      navigate({ to: "/account" });
+      return;
+    }
     addToCart(product.id, product.sizes[0], product.colors[0], 1);
   };
 
@@ -215,7 +244,23 @@ function Index() {
         <main>
           {/* Hero Section */}
           <section id="home" className="section-shell relative isolate overflow-hidden">
-            <div className="pointer-events-none absolute inset-0 -z-10">
+            <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+              {/* Sliding background images */}
+              {heroImages.map((img, idx) => (
+                <div
+                  key={img}
+                  className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+                    idx === heroImageIdx ? "opacity-15" : "opacity-0"
+                  }`}
+                >
+                  <img
+                    src={img}
+                    alt="Background slide"
+                    className="w-full h-full object-cover filter blur-[3px] scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-background/50" />
+                </div>
+              ))}
               <div className="absolute left-[-8rem] top-20 h-64 w-64 rounded-full bg-brand-rose/25 blur-3xl" />
               <div className="absolute right-[-6rem] top-10 h-72 w-72 rounded-full bg-brand-gold/30 blur-3xl" />
               <div className="absolute bottom-0 left-1/2 h-56 w-56 -translate-x-1/2 rounded-full bg-primary/15 blur-3xl" />
@@ -274,7 +319,7 @@ function Index() {
                 <div className="absolute -left-2 bottom-7 hidden w-40 rounded-[1.6rem] border border-border/70 bg-card/90 p-3 shadow-[var(--shadow-soft)] md:block animate-float-up">
                   <img
                     src={navyDress.url}
-                    alt="Navy dress from Vastra Boutique"
+                    alt="Navy dress from Vastra Butique"
                     className="aspect-[4/5] w-full rounded-[1.1rem] object-cover"
                     loading="lazy"
                   />
@@ -287,7 +332,7 @@ function Index() {
                   </div>
                   <img
                     src={purpleLook.url}
-                    alt="Featured purple boutique dress from Vastra Boutique"
+                    alt="Featured purple boutique dress from Vastra Butique"
                     className="aspect-[4/5] w-full rounded-[1.6rem] object-cover object-top"
                     fetchPriority="high"
                   />
@@ -302,7 +347,7 @@ function Index() {
                         </p>
                       </div>
                       <Button variant="hero" size="sm" asChild className="rounded-full">
-                        <Link to="/product/1">View Details</Link>
+                        <Link to="/product/$id" params={{ id: "1" }}>View Details</Link>
                       </Button>
                     </div>
                   </div>
@@ -316,9 +361,9 @@ function Index() {
             <div className="container-shell grid gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-center">
               <div>
                 <SectionHeading
-                  eyebrow="About Vastra Boutique"
+                  eyebrow="About Vastra Butique"
                   title="A boutique story built on confidence, comfort and style."
-                  text="Vastra Boutique was created with a passion for bringing trendy, stylish and comfortable fashion for girls. We believe fashion is not only about clothes — it’s about confidence, personality and style. From trendy western wear to beautiful ethnic collections, we carefully curate stylish outfits designed especially for young girls who love fashion."
+                  text="Vastra Butique was created with a passion for bringing trendy, stylish and comfortable fashion for girls. We believe fashion is not only about clothes — it’s about confidence, personality and style. From trendy western wear to beautiful ethnic collections, we carefully curate stylish outfits designed especially for young girls who love fashion."
                 />
               </div>
 
@@ -405,7 +450,8 @@ function Index() {
                   {trendingOutfits.map((product) => (
                     <Link
                       key={product.id}
-                      to={`/product/${product.id}`}
+                      to="/product/$id"
+                      params={{ id: String(product.id) }}
                       className="group"
                     >
                       <article className="luxury-panel overflow-hidden rounded-[1.6rem] relative flex flex-col h-full bg-card/40 hover:bg-card transition-all duration-300">

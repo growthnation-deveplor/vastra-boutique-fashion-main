@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from "../components/ui/select";
 import { Heart, ShoppingBag, Eye, SlidersHorizontal, RotateCcw } from "lucide-react";
+import { toast } from "sonner";
 import {
   Sheet,
   SheetContent,
@@ -44,7 +45,7 @@ export const Route = createFileRoute("/shop")({
 function Shop() {
   const navigate = useNavigate({ from: Route.fullPath });
   const searchParams = Route.useSearch() as ShopSearchParams;
-  const { toggleWishlist, isInWishlist, addToCart } = useStore();
+  const { toggleWishlist, isInWishlist, addToCart, currentUser } = useStore();
 
   // Price range constants
   const maxPriceInDb = Math.max(...PRODUCTS.map((p) => p.discountPrice));
@@ -286,6 +287,11 @@ function Shop() {
   const handleQuickAdd = (e: React.MouseEvent, product: typeof PRODUCTS[0]) => {
     e.preventDefault();
     e.stopPropagation();
+    if (!currentUser) {
+      toast.warning("Please sign in or register to add items to your cart.");
+      navigate({ to: "/account" });
+      return;
+    }
     // Quick Add defaults to first size & color
     addToCart(product.id, product.sizes[0], product.colors[0], 1);
   };
@@ -439,7 +445,8 @@ function Shop() {
                 {filteredProducts.map((product) => (
                   <Link
                     key={product.id}
-                    to={`/product/${product.id}`}
+                    to="/product/$id"
+                    params={{ id: String(product.id) }}
                     className="group"
                   >
                     <article className="luxury-panel overflow-hidden rounded-[1.6rem] relative flex flex-col h-full bg-card/30 hover:bg-card/75 transition-all duration-300">

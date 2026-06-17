@@ -78,11 +78,13 @@ export const Navbar: React.FC = () => {
       <div className="container-shell flex items-center justify-between py-4">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-3">
-          <div className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-border bg-card text-xs font-semibold tracking-[0.25em] text-primary shadow-[var(--shadow-soft)]">
-            VB
-          </div>
+          <img
+            src="/logo.png"
+            alt="Vastra Butique Logo"
+            className="h-11 w-11 shrink-0 rounded-full object-cover border border-border bg-card shadow-[var(--shadow-soft)]"
+          />
           <div className="hidden sm:block">
-            <p className="text-xl font-semibold leading-tight text-foreground">Vastra Boutique</p>
+            <p className="text-xl font-semibold leading-tight text-foreground">Vastra Butique</p>
             <p className="text-[10px] uppercase tracking-[0.26em] text-muted-foreground">
               Girls Fashion Boutique
             </p>

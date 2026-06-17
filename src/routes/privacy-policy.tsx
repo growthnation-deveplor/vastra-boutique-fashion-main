@@ -28,7 +28,7 @@ function PrivacyPolicyPage() {
 
         <Card className="luxury-panel rounded-2xl p-6 sm:p-8 border-border/50 flex flex-col gap-6 text-sm leading-8 font-medium text-muted-foreground">
           <p className="text-foreground font-semibold">
-            Vastra Boutique values the privacy of our visitors and customers. This Privacy Policy describes how we collect, use, and protect your personal information when you use our website.
+            Vastra Butique values the privacy of our visitors and customers. This Privacy Policy describes how we collect, use, and protect your personal information when you use our website.
           </p>
 
           <div>

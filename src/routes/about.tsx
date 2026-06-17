@@ -31,7 +31,7 @@ function AboutPage() {
     {
       year: "2020",
       title: "Founded in Jaipur",
-      desc: "Vastra Boutique began as a small boutique studio in the heart of Jaipur, Rajasthan, driven by a passion to combine traditional Indian textiles with modern western silhouettes.",
+      desc: "Vastra Butique began as a small boutique studio in the heart of Jaipur, Rajasthan, driven by a passion to combine traditional Indian textiles with modern western silhouettes.",
     },
     {
       year: "2022",
@@ -62,7 +62,7 @@ function AboutPage() {
         />
         <div className="relative z-20 max-w-2xl px-6">
           <p className="text-xs font-semibold uppercase tracking-[0.3em] text-brand-gold">
-            Vastra Boutique Story
+            Vastra Butique Story
           </p>
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold text-white mt-4 leading-none">
             Crafting Elegance Since 2020
@@ -84,7 +84,7 @@ function AboutPage() {
               Empowering Girls through Confident Styling
             </h2>
             <p className="text-sm leading-7 text-muted-foreground mt-2">
-              At Vastra Boutique, we believe that fashion is a powerful way to express confidence, personality, and charm. Founded in Jaipur — the heritage craft capital of India — our boutique curates the finest fabrics, traditional craft handiworks, and premium silhouettes designed specifically for girls.
+              At Vastra Butique, we believe that fashion is a powerful way to express confidence, personality, and charm. Founded in Jaipur — the heritage craft capital of India — our boutique curates the finest fabrics, traditional craft handiworks, and premium silhouettes designed specifically for girls.
             </p>
             <p className="text-sm leading-7 text-muted-foreground">
               From festive ethnic sets to trendy western outfits, each piece in our collection represents Jaipur&apos;s rich textile heritage integrated with global fashion sensibilities.
@@ -130,7 +130,7 @@ function AboutPage() {
       <section className="section-shell container-shell max-w-3xl">
         <div className="text-center max-w-xl mx-auto mb-12">
           <p className="text-xs font-semibold uppercase tracking-[0.28em] text-muted-foreground">Our Growth</p>
-          <h2 className="text-3xl font-semibold text-foreground mt-3 sm:text-4xl">The Vastra Boutique Journey</h2>
+          <h2 className="text-3xl font-semibold text-foreground mt-3 sm:text-4xl">The Vastra Butique Journey</h2>
         </div>
 
         <div className="relative pl-8 sm:pl-12 border-l border-primary/20 flex flex-col gap-10">

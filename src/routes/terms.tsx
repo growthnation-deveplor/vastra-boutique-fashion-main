@@ -28,7 +28,7 @@ function TermsOfServicePage() {
 
         <Card className="luxury-panel rounded-2xl p-6 sm:p-8 border-border/50 flex flex-col gap-6 text-sm leading-8 font-medium text-muted-foreground">
           <p className="text-foreground font-semibold">
-            Welcome to Vastra Boutique. By accessing or using our website, you agree to comply with and be bound by the following Terms of Service. Please review them carefully.
+            Welcome to Vastra Butique. By accessing or using our website, you agree to comply with and be bound by the following Terms of Service. Please review them carefully.
           </p>
 
           <div>

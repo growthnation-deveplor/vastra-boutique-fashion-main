@@ -38,7 +38,7 @@ interface Review {
 function ProductDetails() {
   const { id } = Route.useParams();
   const navigate = useNavigate();
-  const { addToCart, toggleWishlist, isInWishlist } = useStore();
+  const { addToCart, toggleWishlist, isInWishlist, currentUser } = useStore();
 
   const product = useMemo(() => getProductById(id), [id]);
 
@@ -129,19 +129,22 @@ function ProductDetails() {
   };
 
   const handleAddToCart = () => {
+    if (!currentUser) {
+      toast.warning("Please sign in or register to add items to your cart.");
+      navigate({ to: "/account" });
+      return;
+    }
     addToCart(product.id, selectedSize, selectedColor, quantity);
   };
 
   const handleBuyNow = () => {
+    if (!currentUser) {
+      toast.warning("Please sign in or register to buy items.");
+      navigate({ to: "/account" });
+      return;
+    }
     addToCart(product.id, selectedSize, selectedColor, quantity);
     navigate({ to: "/checkout" });
-  };
-
-  // WhatsApp Order Link generator
-  const handleWhatsAppOrder = () => {
-    const baseMessage = `Hi Vastra Boutique, I want to order this outfit:\n\n*Product:* ${product.name}\n*Price:* ${formatPrice(product.discountPrice)}\n*Size:* ${selectedSize}\n*Color:* ${selectedColor.name}\n*Quantity:* ${quantity}\n*Link:* https://vastraboutique.in/product/${product.id}`;
-    const url = `https://wa.me/917976396802?text=${encodeURIComponent(baseMessage)}`;
-    window.open(url, "_blank");
   };
 
   // Related products
@@ -256,7 +259,7 @@ function ProductDetails() {
                 <span className="text-sm sm:text-base text-muted-foreground line-through">
                   {formatPrice(product.price)}
                 </span>
-                <Badge variant="hero" className="rounded-full text-xs font-semibold ml-1.5 bg-primary text-primary-foreground">
+                <Badge variant="default" className="rounded-full text-xs font-semibold ml-1.5 bg-primary text-primary-foreground">
                   Save {getDiscountPercent(product.price, product.discountPrice)}%
                 </Badge>
               </div>
@@ -369,14 +372,6 @@ function ProductDetails() {
                 disabled={!product.inStock}
               >
                 Buy it Now
-              </Button>
-              <Button
-                onClick={handleWhatsAppOrder}
-                size="lg"
-                className="w-full sm:col-span-2 bg-success text-white hover:bg-success/90 gap-2 h-12 rounded-full"
-              >
-                <MessageCircle className="h-5 w-5 fill-white" />
-                Inquire & Order on WhatsApp
               </Button>
             </div>
 
@@ -551,7 +546,8 @@ function ProductDetails() {
               {relatedProducts.map((rel) => (
                 <Link
                   key={rel.id}
-                  to={`/product/${rel.id}`}
+                  to="/product/$id"
+                  params={{ id: String(rel.id) }}
                   className="group"
                 >
                   <article className="luxury-panel overflow-hidden rounded-[1.35rem] relative flex flex-col h-full bg-card/30 hover:bg-card/75 transition-all duration-300">

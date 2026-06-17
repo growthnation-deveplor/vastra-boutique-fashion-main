@@ -92,6 +92,10 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   // --- Cart System ---
   const addToCart = (productId: number, size: string, color: Color, quantity = 1) => {
+    if (!currentUser) {
+      toast.warning("Please sign in or register to add items to your cart.");
+      return;
+    }
     const product = getProductById(productId);
     if (!product) {
       toast.error("Product not found");

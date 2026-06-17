@@ -11,6 +11,7 @@ import { RadioGroup, RadioGroupItem } from "../components/ui/radio-group";
 import { Separator } from "../components/ui/separator";
 import { Truck, CreditCard, ShieldCheck, ArrowLeft, ShoppingBag } from "lucide-react";
 import { toast } from "sonner";
+import { Badge } from "../components/ui/badge";
 
 const checkoutSearchSchema = z.object({
   coupon: z.string().optional().catch(""),
@@ -31,6 +32,14 @@ function Checkout() {
     placeOrder,
   } = useStore();
 
+  // Redirect to account if not logged in
+  useEffect(() => {
+    if (!currentUser) {
+      toast.warning("Please sign in or register to proceed to checkout.");
+      navigate({ to: "/account" });
+    }
+  }, [currentUser, navigate]);
+
   const pricing = getCartTotal(coupon);
 
   // Address Form State
@@ -44,6 +53,26 @@ function Checkout() {
 
   // Payment Method
   const [paymentMethod, setPaymentMethod] = useState<"cod" | "card">("cod");
+
+  // Razorpay Integration state
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [scriptLoaded, setScriptLoaded] = useState(false);
+
+  // Load Razorpay SDK Script
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.async = true;
+    script.onload = () => setScriptLoaded(true);
+    script.onerror = () => {
+      console.error("Failed to load Razorpay SDK");
+      toast.error("Failed to load payment gateway script. Please check your network connection.");
+    };
+    document.body.appendChild(script);
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
 
   // Pre-fill form if user is logged in
   useEffect(() => {
@@ -81,7 +110,7 @@ function Checkout() {
     }
   };
 
-  const handlePlaceOrderSubmit = (e: React.FormEvent) => {
+  const handlePlaceOrderSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!name.trim() || !email.trim() || !phone.trim() || !addressLine.trim() || !city.trim() || !state.trim() || !pincode.trim()) {
@@ -99,10 +128,107 @@ function Checkout() {
       pincode: pincode.trim(),
     };
 
-    const orderObj = placeOrder(shippingAddress, paymentMethod, coupon);
+    if (paymentMethod === "cod") {
+      const orderObj = placeOrder(shippingAddress, "cod", coupon);
+      if (orderObj) {
+        navigate({ to: "/checkout-confirmation" });
+      }
+    } else {
+      // Razorpay card checkout flow
+      if (!scriptLoaded || !(window as any).Razorpay) {
+        toast.error("Payment gateway is still loading. Please try again in a few seconds.");
+        return;
+      }
 
-    if (orderObj) {
-      navigate({ to: "/checkout-confirmation" });
+      setIsProcessing(true);
+
+      try {
+        // Step 1: Create Order on backend
+        const totalInPaise = Math.round(pricing.total * 100);
+        
+        const response = await fetch("/api/create-order", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            amount: totalInPaise,
+            currency: "INR",
+          }),
+        });
+
+        if (!response.ok) {
+          const errData = await response.json();
+          throw new Error(errData.error || "Failed to create order");
+        }
+
+        const orderData = await response.json();
+        
+        // Step 2: Open Razorpay checkout modal
+        const options = {
+          key: import.meta.env.VITE_RAZORPAY_KEY_ID || "",
+          amount: orderData.amount,
+          currency: orderData.currency,
+          name: "Vastra Butique",
+          description: "Purchase luxury designer wear",
+          image: "/logo.png",
+          order_id: orderData.id,
+          handler: async function (paymentResponse: any) {
+            try {
+              // Step 3: Verify signature on backend
+              const verifyResponse = await fetch("/api/verify-payment", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  razorpay_order_id: paymentResponse.razorpay_order_id,
+                  razorpay_payment_id: paymentResponse.razorpay_payment_id,
+                  razorpay_signature: paymentResponse.razorpay_signature,
+                }),
+              });
+
+              const verifyData = await verifyResponse.json();
+
+              if (verifyResponse.ok && verifyData.success) {
+                // Step 4: Complete order placement locally
+                const orderObj = placeOrder(shippingAddress, "card", coupon);
+                if (orderObj) {
+                  navigate({ to: "/checkout-confirmation" });
+                }
+              } else {
+                toast.error(verifyData.error || "Payment signature verification failed.");
+              }
+            } catch (err: any) {
+              console.error("Verification error:", err);
+              toast.error("An error occurred during payment verification.");
+            } finally {
+              setIsProcessing(false);
+            }
+          },
+          prefill: {
+            name: shippingAddress.name,
+            email: shippingAddress.email,
+            contact: shippingAddress.phone,
+          },
+          theme: {
+            color: "#111111",
+          },
+          modal: {
+            ondismiss: function () {
+              toast.info("Payment process cancelled.");
+              setIsProcessing(false);
+            },
+          },
+        };
+
+        const rzp = new (window as any).Razorpay(options);
+        rzp.open();
+      } catch (error: any) {
+        console.error("Razorpay error:", error);
+        toast.error(error.message || "Failed to initiate payment gateway.");
+        setIsProcessing(false);
+      }
     }
   };
 
@@ -280,16 +406,16 @@ function Checkout() {
                   </Label>
                 </div>
 
-                {/* Simulated Card payment */}
+                {/* Razorpay checkout */}
                 <div className="flex items-start gap-3 p-3.5 border border-border/40 hover:border-primary/40 rounded-xl bg-card/25 cursor-pointer">
                   <RadioGroupItem value="card" id="payCard" className="mt-0.5" />
                   <Label htmlFor="payCard" className="flex-1 cursor-pointer">
                     <p className="font-bold text-foreground text-sm flex items-center gap-1.5">
                       <CreditCard className="h-4.5 w-4.5 text-primary" />
-                      Simulate Card Payment
+                      Pay via Razorpay (Cards, UPI, Netbanking)
                     </p>
                     <p className="text-xs text-muted-foreground mt-1 leading-normal font-semibold">
-                      Checkout immediately using a simulated payment gateway. Your order status will mark as paid.
+                      Pay securely with Credit/Debit Cards, UPI, Netbanking, or Wallets using the Razorpay gateway.
                     </p>
                   </Label>
                 </div>
@@ -297,8 +423,16 @@ function Checkout() {
             </Card>
 
             {/* Submit checkout */}
-            <Button type="submit" size="lg" variant="hero" className="w-full rounded-full h-12">
-              Place Order ({formatPrice(pricing.total)})
+            <Button 
+              type="submit" 
+              size="lg" 
+              variant="hero" 
+              className="w-full rounded-full h-12"
+              disabled={isProcessing}
+            >
+              {isProcessing 
+                ? "Processing Payment..." 
+                : `Place Order (${formatPrice(pricing.total)})`}
             </Button>
           </form>
 

@@ -8,6 +8,7 @@ import { Card } from "../components/ui/card";
 import { Separator } from "../components/ui/separator";
 import { Trash2, Plus, Minus, Tag, ChevronRight, ShoppingBag, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
+import { Badge } from "../components/ui/badge";
 
 export const Route = createFileRoute("/cart")({
   component: CartPage,
@@ -20,11 +21,20 @@ function CartPage() {
     removeFromCart,
     cartCount,
     getCartTotal,
+    currentUser,
   } = useStore();
 
   const [couponInput, setCouponInput] = useState("");
   const [activeCoupon, setActiveCoupon] = useState<string | null>(null);
   const navigate = useNavigate();
+
+  // Redirect to account if not logged in
+  React.useEffect(() => {
+    if (!currentUser) {
+      toast.warning("Please sign in or register to view your shopping bag.");
+      navigate({ to: "/account" });
+    }
+  }, [currentUser, navigate]);
 
   const handleApplyCoupon = (e: React.FormEvent) => {
     e.preventDefault();
@@ -97,7 +107,8 @@ function CartPage() {
                 >
                   {/* Image */}
                   <Link
-                    to={`/product/${product.id}`}
+                    to="/product/$id"
+                    params={{ id: String(product.id) }}
                     className="shrink-0 w-24 h-32 sm:w-28 sm:h-36 rounded-xl overflow-hidden border border-border/40 bg-brand-pearl"
                   >
                     <img
@@ -111,7 +122,11 @@ function CartPage() {
                   <div className="flex-grow flex flex-col justify-between min-w-0">
                     <div>
                       <div className="flex justify-between items-start gap-2">
-                        <Link to={`/product/${product.id}`} className="hover:text-primary transition-colors">
+                        <Link 
+                          to="/product/$id" 
+                          params={{ id: String(product.id) }} 
+                          className="hover:text-primary transition-colors"
+                        >
                           <h3 className="font-bold text-foreground text-base sm:text-lg truncate leading-tight">
                             {product.name}
                           </h3>
@@ -295,7 +310,7 @@ function CartPage() {
               )}
 
               <Button asChild size="lg" variant="hero" className="w-full mt-6 rounded-full h-12">
-                <Link to="/checkout" search={{ coupon: activeCoupon }}>
+                <Link to="/checkout" search={{ coupon: activeCoupon ?? undefined }}>
                   Proceed to Checkout
                 </Link>
               </Button>

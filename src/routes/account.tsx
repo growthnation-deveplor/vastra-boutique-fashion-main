@@ -137,11 +137,7 @@ function AccountPage() {
     ? orders.filter((o) => o.userId === currentUser.id)
     : [];
 
-  const handleWhatsAppOrderQuery = (orderId: string, total: number) => {
-    const msg = `Hi Vastra Boutique, I am checking the status of my order.\n\n*Order ID:* ${orderId}\n*Total:* ${formatPrice(total)}`;
-    const url = `https://wa.me/917976396802?text=${encodeURIComponent(msg)}`;
-    window.open(url, "_blank");
-  };
+
 
   // --- Unauthenticated view (Login/Register) ---
   if (!currentUser) {
@@ -558,19 +554,11 @@ function AccountPage() {
 
                         <Separator className="bg-border/30" />
 
-                        {/* Order Footer WhatsApp Query */}
+                        {/* Order Details */}
                         <div className="flex sm:justify-between sm:items-center flex-col sm:flex-row gap-3">
                           <p className="text-[11px] text-muted-foreground font-semibold leading-normal">
                             Payment method: <strong className="text-foreground uppercase">{order.paymentMethod}</strong> • Status: <strong className="text-foreground">{order.paymentStatus}</strong>
                           </p>
-                          <Button
-                            onClick={() => handleWhatsAppOrderQuery(order.orderId, order.pricing.total)}
-                            variant="outline"
-                            className="h-8.5 rounded-full border-success/30 bg-success/5 hover:bg-success hover:text-white text-success text-xs font-bold gap-1.5 px-4"
-                          >
-                            <MessageCircle className="h-4 w-4 fill-current" />
-                            Inquire on WhatsApp
-                          </Button>
                         </div>
                       </Card>
                     ))}

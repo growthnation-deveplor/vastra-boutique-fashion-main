@@ -64,7 +64,7 @@ function CheckoutConfirmation() {
           <CheckCircle2 className="h-16 w-16 text-success animate-bounce-soft" />
           <h1 className="text-3xl font-bold text-foreground sm:text-4xl">Order Placed!</h1>
           <p className="text-sm text-muted-foreground max-w-sm leading-relaxed mt-1">
-            Thank you for shopping at Vastra Boutique. Your order has been registered and is being processed.
+            Thank you for shopping at Vastra Butique. Your order has been registered and is being processed.
           </p>
         </div>
 
@@ -90,7 +90,7 @@ function CheckoutConfirmation() {
               <p className="font-bold text-foreground">Estimated Delivery Date</p>
               <p className="text-muted-foreground mt-0.5 font-medium">{getDeliveryDateString()}</p>
               <p className="text-[11px] text-muted-foreground/80 mt-1 leading-normal font-semibold">
-                You will receive a WhatsApp notification with tracking details once your package is dispatched.
+                You will receive an email notification with tracking details once your package is dispatched.
               </p>
             </div>
           </div>
@@ -176,15 +176,7 @@ function CheckoutConfirmation() {
         </Card>
 
         {/* Buttons Action */}
-        <div className="grid gap-3 sm:grid-cols-2 mt-8">
-          <Button
-            onClick={handleWhatsAppOrderQuery}
-            variant="outline"
-            className="w-full border-success/30 bg-success/5 text-success hover:bg-success hover:text-white rounded-full h-11 text-xs font-bold gap-2"
-          >
-            <MessageCircle className="h-4.5 w-4.5 fill-current" />
-            Confirm Order on WhatsApp
-          </Button>
+        <div className="mt-8">
           <Button asChild variant="hero" className="w-full rounded-full h-11 text-xs font-bold gap-2">
             <Link to="/shop">
               <ShoppingBag className="h-4.5 w-4.5" />

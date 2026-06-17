@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useStore } from "../hooks/use-store";
+import { toast } from "sonner";
 import { getProductById, formatPrice, getDiscountPercent } from "../lib/products-db";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
@@ -11,7 +12,8 @@ export const Route = createFileRoute("/wishlist")({
 });
 
 function WishlistPage() {
-  const { wishlist, toggleWishlist, addToCart } = useStore();
+  const { wishlist, toggleWishlist, addToCart, currentUser } = useStore();
+  const navigate = useNavigate();
 
   const wishlistProducts = useMemo(() => {
     return wishlist
@@ -24,6 +26,11 @@ function WishlistPage() {
   };
 
   const handleAddToCart = (product: any) => {
+    if (!currentUser) {
+      toast.warning("Please sign in or register to add items to your cart.");
+      navigate({ to: "/account" });
+      return;
+    }
     addToCart(product.id, product.sizes[0], product.colors[0], 1);
   };
 
@@ -61,7 +68,8 @@ function WishlistPage() {
               {/* Product Image Section */}
               <div className="overflow-hidden p-2.5 sm:p-3 relative">
                 <Link
-                  to={`/product/${product.id}`}
+                  to="/product/$id"
+                  params={{ id: String(product.id) }}
                   className="luxury-outline overflow-hidden rounded-[1.25rem] bg-brand-pearl relative aspect-[4/5] block"
                 >
                   <img
@@ -89,7 +97,11 @@ function WishlistPage() {
                     <span>{product.fabric}</span>
                     <span className="text-brand-gold">⭐️ {product.rating}</span>
                   </div>
-                  <Link to={`/product/${product.id}`} className="hover:text-primary transition-colors">
+                  <Link 
+                    to="/product/$id" 
+                    params={{ id: String(product.id) }} 
+                    className="hover:text-primary transition-colors"
+                  >
                     <h3 className="font-semibold text-foreground text-sm sm:text-base mt-2 line-clamp-1 leading-tight">
                       {product.name}
                     </h3>

@@ -28,7 +28,7 @@ function RefundPolicyPage() {
 
         <Card className="luxury-panel rounded-2xl p-6 sm:p-8 border-border/50 flex flex-col gap-6 text-sm leading-8 font-medium text-muted-foreground">
           <p className="text-foreground font-semibold">
-            At Vastra Boutique, we are committed to providing you with premium quality apparel and custom designs. If you are not entirely satisfied with your purchase, we are here to help. Please read our returns and refunds procedure below.
+            At Vastra Butique, we are committed to providing you with premium quality apparel and custom designs. If you are not entirely satisfied with your purchase, we are here to help. Please read our returns and refunds procedure below.
           </p>
 
           <div>
@@ -75,7 +75,7 @@ function RefundPolicyPage() {
                 <strong>Cash on Delivery (COD) orders:</strong> COD orders are refunded via Bank Transfer or UPI. You will need to provide your banking details to our customer support representatives.
               </li>
               <li>
-                Alternatively, you can choose to receive your refund as <strong>Vastra Boutique Store Credit</strong>, which has lifetime validity.
+                Alternatively, you can choose to receive your refund as <strong>Vastra Butique Store Credit</strong>, which has lifetime validity.
               </li>
             </ul>
           </div>

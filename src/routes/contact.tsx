@@ -44,7 +44,7 @@ function ContactPage() {
       title: "Our Boutique Studio",
       content: (
         <p className="mt-1 text-sm text-muted-foreground leading-relaxed">
-          Vastra Boutique Studio,<br />
+          Vastra Butique Studio,<br />
           Johri Bazar Road, Near Hawa Mahal,<br />
           Jaipur, Rajasthan — 302002
         </p>
@@ -219,7 +219,7 @@ function ContactPage() {
           style={{ border: 0, filter: "grayscale(0.1) contrast(1.05)" }}
           allowFullScreen
           loading="lazy"
-          title="Vastra Boutique Studio Jaipur Location"
+          title="Vastra Butique Studio Jaipur Location"
         />
       </div>
     </div>

@@ -28,7 +28,7 @@ function ExchangePolicyPage() {
 
         <Card className="luxury-panel rounded-2xl p-6 sm:p-8 border-border/50 flex flex-col gap-6 text-sm leading-8 font-medium text-muted-foreground">
           <p className="text-foreground font-semibold">
-            At Vastra Boutique, we want to ensure you get the absolute perfect fit. If the garment you ordered doesn&apos;t fit quite right, we offer a hassle-free exchange service.
+            At Vastra Butique, we are want to ensure you get the absolute perfect fit. If the garment you ordered doesn&apos;t fit quite right, we offer a hassle-free exchange service.
           </p>
 
           <div>
@@ -60,7 +60,7 @@ function ExchangePolicyPage() {
             <p>Getting a size exchange is simple:</p>
             <ol className="list-decimal pl-5 flex flex-col gap-3.5 mt-2">
               <li>
-                Contact us via WhatsApp at <a href="https://wa.me/917976396802" className="text-primary hover:underline font-semibold">+91 7976396802</a> or email <a href="mailto:Lekhrajsharma2129@gmail.com" className="text-primary hover:underline font-semibold">Lekhrajsharma2129@gmail.com</a> with your Order ID and the new size/color you need.
+                Contact us via email <a href="mailto:Lekhrajsharma2129@gmail.com" className="text-primary hover:underline font-semibold">Lekhrajsharma2129@gmail.com</a> with your Order ID and the new size/color you need.
               </li>
               <li>
                 We will schedule a reverse pickup from your shipping address. When the courier agent arrives, hand over the original item in secure packaging.
@@ -87,19 +87,6 @@ function ExchangePolicyPage() {
             <p>
               If the size you requested is out of stock, we will issue a store credit coupon for the item&apos;s purchase value or offer you a different design of equivalent price.
             </p>
-          </div>
-
-          <div className="border-t border-border/40 pt-4 mt-2 flex flex-col sm:flex-row justify-between items-center gap-4 bg-secondary/20 p-4 rounded-xl">
-            <span className="text-xs font-semibold text-foreground">Need help exchanging an item? Chat with our team now.</span>
-            <a
-              href="https://wa.me/917976396802?text=Hi%20Vastra%20Boutique%2C%20I%20want%20to%20request%20a%20size%20exchange%20for%20my%20order."
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-1.5 bg-success text-white px-4 py-2 text-xs font-bold rounded-full hover:bg-success/90 shrink-0"
-            >
-              <MessageCircle className="h-4 w-4 fill-white" />
-              WhatsApp Exchange
-            </a>
           </div>
         </Card>
       </div>
