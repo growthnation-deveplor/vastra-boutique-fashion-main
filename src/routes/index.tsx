@@ -216,6 +216,23 @@ function Index() {
     return () => clearInterval(timer);
   }, [heroImages.length]);
 
+  // Curated slider looks on the right side of the hero section
+  const featuredLooks = [
+    { url: purpleLook.url, title: "Royal Festive Dress", id: "1" },
+    { url: ivoryLook.url, title: "Ivory Silk Suit Set", id: "2" },
+    { url: pinkKurta.url, title: "Premium Pink Kurta Set", id: "4" },
+    { url: burgundyGown.url, title: "Burgundy Velvet Gown", id: "5" },
+    { url: magentaKids.url, title: "Magenta Kids Lehenga", id: "8" },
+  ];
+
+  const [featuredLookIdx, setFeaturedLookIdx] = useState(0);
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setFeaturedLookIdx((prev) => (prev + 1) % featuredLooks.length);
+    }, 3500);
+    return () => clearInterval(timer);
+  }, [featuredLooks.length]);
+
   // Grab trending outfits from database for the products slider
   const trendingOutfits = PRODUCTS.filter((p) => p.badge === "trending" || p.badge === "hot").slice(0, 6);
 
@@ -250,15 +267,15 @@ function Index() {
                 <div
                   key={img}
                   className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-                    idx === heroImageIdx ? "opacity-15" : "opacity-0"
+                    idx === heroImageIdx ? "opacity-22" : "opacity-0"
                   }`}
                 >
                   <img
                     src={img}
                     alt="Background slide"
-                    className="w-full h-full object-cover filter blur-[3px] scale-105"
+                    className="w-full h-full object-cover filter blur-[2px] animate-kenburns"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-background/50" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-background/40" />
                 </div>
               ))}
               <div className="absolute left-[-8rem] top-20 h-64 w-64 rounded-full bg-brand-rose/25 blur-3xl" />
@@ -326,28 +343,41 @@ function Index() {
                 </div>
 
                 <div className="luxury-panel grain-overlay relative overflow-hidden rounded-[2rem] p-4 shadow-[var(--shadow-luxury)] sm:p-5">
-                  <div className="absolute inset-x-5 top-5 flex items-center justify-between text-xs uppercase tracking-[0.24em] text-muted-foreground font-semibold">
+                  <div className="absolute inset-x-5 top-5 flex items-center justify-between text-xs uppercase tracking-[0.24em] text-muted-foreground font-semibold z-20">
                     <span>Signature edit</span>
                     <span>Vastra Signature</span>
                   </div>
-                  <img
-                    src={purpleLook.url}
-                    alt="Featured purple boutique dress from Vastra Butique"
-                    className="aspect-[4/5] w-full rounded-[1.6rem] object-cover object-top"
-                    fetchPriority="high"
-                  />
-                  <div className="absolute inset-x-6 bottom-6 rounded-2xl border border-white/40 bg-background/78 p-4 backdrop-blur-xl">
+                  <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[1.6rem] bg-brand-pearl">
+                    {featuredLooks.map((look, idx) => (
+                      <div
+                        key={look.url}
+                        className={`absolute inset-0 transition-all duration-1000 ease-in-out ${
+                          idx === featuredLookIdx 
+                            ? "opacity-100 scale-100" 
+                            : "opacity-0 scale-95 pointer-events-none"
+                        }`}
+                      >
+                        <img
+                          src={look.url}
+                          alt={look.title}
+                          className="w-full h-full object-cover object-top"
+                          fetchPriority={idx === 0 ? "high" : "low"}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  <div className="absolute inset-x-6 bottom-6 rounded-2xl border border-white/40 bg-background/85 p-4 backdrop-blur-xl z-20 shadow-lg">
                     <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
                       <div className="min-w-0">
                         <p className="truncate text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
                           Signature boutique look
                         </p>
-                        <p className="mt-1 truncate text-lg font-semibold text-foreground">
-                          Royal Festive Dress
+                        <p className="mt-1 truncate text-lg font-bold text-foreground transition-all duration-300">
+                          {featuredLooks[featuredLookIdx].title}
                         </p>
                       </div>
                       <Button variant="hero" size="sm" asChild className="rounded-full">
-                        <Link to="/product/$id" params={{ id: "1" }}>View Details</Link>
+                        <Link to="/product/$id" params={{ id: featuredLooks[featuredLookIdx].id }}>View Details</Link>
                       </Button>
                     </div>
                   </div>

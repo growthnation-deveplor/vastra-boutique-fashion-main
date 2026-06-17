@@ -81,7 +81,7 @@ export const Navbar: React.FC = () => {
           <img
             src="/logo.png"
             alt="Vastra Butique Logo"
-            className="h-11 w-11 shrink-0 rounded-full object-cover border border-border bg-card shadow-[var(--shadow-soft)]"
+            className="h-16 w-auto max-h-[64px] shrink-0 object-contain"
           />
           <div className="hidden sm:block">
             <p className="text-xl font-semibold leading-tight text-foreground">Vastra Butique</p>

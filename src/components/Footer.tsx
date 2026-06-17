@@ -14,7 +14,7 @@ export const Footer: React.FC = () => {
             <img
               src="/logo.png"
               alt="Vastra Butique Logo"
-              className="h-10 w-10 shrink-0 rounded-full object-cover border border-border bg-card shadow-sm"
+              className="h-14 w-auto max-h-[56px] shrink-0 object-contain"
             />
             <div>
               <p className="text-lg font-bold text-foreground">Vastra Butique</p>

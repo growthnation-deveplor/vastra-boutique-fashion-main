@@ -52,7 +52,7 @@ function Checkout() {
   const [pincode, setPincode] = useState("");
 
   // Payment Method
-  const [paymentMethod, setPaymentMethod] = useState<"cod" | "card">("cod");
+  const [paymentMethod, setPaymentMethod] = useState<"cod" | "card">("card");
 
   // Razorpay Integration state
   const [isProcessing, setIsProcessing] = useState(false);
@@ -128,107 +128,100 @@ function Checkout() {
       pincode: pincode.trim(),
     };
 
-    if (paymentMethod === "cod") {
-      const orderObj = placeOrder(shippingAddress, "cod", coupon);
-      if (orderObj) {
-        navigate({ to: "/checkout-confirmation" });
+    // Razorpay checkout flow
+    if (!scriptLoaded || !(window as any).Razorpay) {
+      toast.error("Payment gateway is still loading. Please try again in a few seconds.");
+      return;
+    }
+
+    setIsProcessing(true);
+
+    try {
+      // Step 1: Create Order on backend
+      const totalInPaise = Math.round(pricing.total * 100);
+      
+      const response = await fetch("/api/create-order", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          amount: totalInPaise,
+          currency: "INR",
+        }),
+      });
+
+      if (!response.ok) {
+        const errData = await response.json();
+        throw new Error(errData.error || "Failed to create order");
       }
-    } else {
-      // Razorpay card checkout flow
-      if (!scriptLoaded || !(window as any).Razorpay) {
-        toast.error("Payment gateway is still loading. Please try again in a few seconds.");
-        return;
-      }
 
-      setIsProcessing(true);
+      const orderData = await response.json();
+      
+      // Step 2: Open Razorpay checkout modal
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID || "",
+        amount: orderData.amount,
+        currency: orderData.currency,
+        name: "Vastra Butique",
+        description: "Purchase luxury designer wear",
+        image: "/logo.png",
+        order_id: orderData.id,
+        handler: async function (paymentResponse: any) {
+          try {
+            // Step 3: Verify signature on backend
+            const verifyResponse = await fetch("/api/verify-payment", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                razorpay_order_id: paymentResponse.razorpay_order_id,
+                razorpay_payment_id: paymentResponse.razorpay_payment_id,
+                razorpay_signature: paymentResponse.razorpay_signature,
+              }),
+            });
 
-      try {
-        // Step 1: Create Order on backend
-        const totalInPaise = Math.round(pricing.total * 100);
-        
-        const response = await fetch("/api/create-order", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            amount: totalInPaise,
-            currency: "INR",
-          }),
-        });
+            const verifyData = await verifyResponse.json();
 
-        if (!response.ok) {
-          const errData = await response.json();
-          throw new Error(errData.error || "Failed to create order");
-        }
-
-        const orderData = await response.json();
-        
-        // Step 2: Open Razorpay checkout modal
-        const options = {
-          key: import.meta.env.VITE_RAZORPAY_KEY_ID || "",
-          amount: orderData.amount,
-          currency: orderData.currency,
-          name: "Vastra Butique",
-          description: "Purchase luxury designer wear",
-          image: "/logo.png",
-          order_id: orderData.id,
-          handler: async function (paymentResponse: any) {
-            try {
-              // Step 3: Verify signature on backend
-              const verifyResponse = await fetch("/api/verify-payment", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  razorpay_order_id: paymentResponse.razorpay_order_id,
-                  razorpay_payment_id: paymentResponse.razorpay_payment_id,
-                  razorpay_signature: paymentResponse.razorpay_signature,
-                }),
-              });
-
-              const verifyData = await verifyResponse.json();
-
-              if (verifyResponse.ok && verifyData.success) {
-                // Step 4: Complete order placement locally
-                const orderObj = placeOrder(shippingAddress, "card", coupon);
-                if (orderObj) {
-                  navigate({ to: "/checkout-confirmation" });
-                }
-              } else {
-                toast.error(verifyData.error || "Payment signature verification failed.");
+            if (verifyResponse.ok && verifyData.success) {
+              // Step 4: Complete order placement locally
+              const orderObj = placeOrder(shippingAddress, "card", coupon);
+              if (orderObj) {
+                navigate({ to: "/checkout-confirmation" });
               }
-            } catch (err: any) {
-              console.error("Verification error:", err);
-              toast.error("An error occurred during payment verification.");
-            } finally {
-              setIsProcessing(false);
+            } else {
+              toast.error(verifyData.error || "Payment signature verification failed.");
             }
+          } catch (err: any) {
+            console.error("Verification error:", err);
+            toast.error("An error occurred during payment verification.");
+          } finally {
+            setIsProcessing(false);
+          }
+        },
+        prefill: {
+          name: shippingAddress.name,
+          email: shippingAddress.email,
+          contact: shippingAddress.phone,
+        },
+        theme: {
+          color: "#111111",
+        },
+        modal: {
+          ondismiss: function () {
+            toast.info("Payment process cancelled.");
+            setIsProcessing(false);
           },
-          prefill: {
-            name: shippingAddress.name,
-            email: shippingAddress.email,
-            contact: shippingAddress.phone,
-          },
-          theme: {
-            color: "#111111",
-          },
-          modal: {
-            ondismiss: function () {
-              toast.info("Payment process cancelled.");
-              setIsProcessing(false);
-            },
-          },
-        };
+        },
+      };
 
-        const rzp = new (window as any).Razorpay(options);
-        rzp.open();
-      } catch (error: any) {
-        console.error("Razorpay error:", error);
-        toast.error(error.message || "Failed to initiate payment gateway.");
-        setIsProcessing(false);
-      }
+      const rzp = new (window as any).Razorpay(options);
+      rzp.open();
+    } catch (error: any) {
+      console.error("Razorpay error:", error);
+      toast.error(error.message || "Failed to initiate payment gateway.");
+      setIsProcessing(false);
     }
   };
 
@@ -387,39 +380,17 @@ function Checkout() {
             {/* Payment Method Choice */}
             <Card className="luxury-panel rounded-2xl p-6 border-border/50 flex flex-col gap-4">
               <h3 className="text-lg font-bold text-foreground">Payment Method</h3>
-              <RadioGroup
-                value={paymentMethod}
-                onValueChange={(val) => setPaymentMethod(val as "cod" | "card")}
-                className="flex flex-col gap-3"
-              >
-                {/* Cash on Delivery option */}
-                <div className="flex items-start gap-3 p-3.5 border border-border/40 hover:border-primary/40 rounded-xl bg-card/25 cursor-pointer">
-                  <RadioGroupItem value="cod" id="payCod" className="mt-0.5" />
-                  <Label htmlFor="payCod" className="flex-1 cursor-pointer">
-                    <p className="font-bold text-foreground text-sm flex items-center gap-1.5">
-                      <Truck className="h-4.5 w-4.5 text-primary" />
-                      Cash on Delivery (COD)
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-1 leading-normal font-semibold">
-                      Pay with cash when your gorgeous outfits are delivered. Free shipping on cod orders over ₹999.
-                    </p>
-                  </Label>
+              <div className="flex items-start gap-3.5 p-4 border border-primary/30 rounded-xl bg-card/25">
+                <CreditCard className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-bold text-foreground text-sm">
+                    Online Payment (Prepaid Only)
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1.5 leading-normal font-semibold">
+                    Pay securely using Credit/Debit Cards, UPI, Netbanking, or Wallets via Razorpay gateway.
+                  </p>
                 </div>
-
-                {/* Razorpay checkout */}
-                <div className="flex items-start gap-3 p-3.5 border border-border/40 hover:border-primary/40 rounded-xl bg-card/25 cursor-pointer">
-                  <RadioGroupItem value="card" id="payCard" className="mt-0.5" />
-                  <Label htmlFor="payCard" className="flex-1 cursor-pointer">
-                    <p className="font-bold text-foreground text-sm flex items-center gap-1.5">
-                      <CreditCard className="h-4.5 w-4.5 text-primary" />
-                      Pay via Razorpay (Cards, UPI, Netbanking)
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-1 leading-normal font-semibold">
-                      Pay securely with Credit/Debit Cards, UPI, Netbanking, or Wallets using the Razorpay gateway.
-                    </p>
-                  </Label>
-                </div>
-              </RadioGroup>
+              </div>
             </Card>
 
             {/* Submit checkout */}
