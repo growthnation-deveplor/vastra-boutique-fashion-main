@@ -1,10 +1,21 @@
 import { createFileRoute } from "@tanstack/react-router";
 import Razorpay from "razorpay";
 
-const razorpay = new Razorpay({
-  key_id: process.env.VITE_RAZORPAY_KEY_ID || "",
-  key_secret: process.env.RAZORPAY_KEY_SECRET || "",
-});
+let razorpayInstance: Razorpay | null = null;
+function getRazorpay() {
+  if (!razorpayInstance) {
+    const key_id = process.env.VITE_RAZORPAY_KEY_ID;
+    const key_secret = process.env.RAZORPAY_KEY_SECRET;
+    if (!key_id || !key_secret) {
+      throw new Error("Razorpay credentials (VITE_RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET) are not configured.");
+    }
+    razorpayInstance = new Razorpay({
+      key_id,
+      key_secret,
+    });
+  }
+  return razorpayInstance;
+}
 
 export const Route = createFileRoute("/api/create-order")({
   server: {
@@ -27,7 +38,7 @@ export const Route = createFileRoute("/api/create-order")({
             receipt: receipt || `receipt_${Date.now()}`,
           };
 
-          const order = await razorpay.orders.create(options);
+          const order = await getRazorpay().orders.create(options);
 
           return new Response(JSON.stringify(order), {
             status: 200,
