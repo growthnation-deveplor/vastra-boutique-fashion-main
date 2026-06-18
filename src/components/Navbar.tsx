@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useStore } from "../hooks/use-store";
 import { getProductById, formatPrice } from "../lib/products-db";
+import { checkAdminAuth } from "../lib/api/products.functions";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Badge } from "./ui/badge";
@@ -34,6 +35,7 @@ import {
   LogOut,
   MapPin,
   ClipboardList,
+  Settings,
 } from "lucide-react";
 
 export const Navbar: React.FC = () => {
@@ -50,7 +52,18 @@ export const Navbar: React.FC = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    checkAdminAuth()
+      .then((res) => {
+        if (res.isAuthenticated) {
+          setIsAdmin(true);
+        }
+      })
+      .catch((err) => console.error(err));
+  }, []);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -166,6 +179,17 @@ export const Navbar: React.FC = () => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56 mt-2 luxury-panel rounded-xl">
+              {isAdmin && (
+                <>
+                  <DropdownMenuItem asChild className="hover:bg-accent/40 cursor-pointer text-primary font-bold">
+                    <Link to="/admin" className="w-full flex items-center gap-2">
+                      <Settings className="h-4 w-4 text-primary" />
+                      Admin Console
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator className="bg-border/60" />
+                </>
+              )}
               {currentUser ? (
                 <>
                   <DropdownMenuLabel className="font-semibold text-foreground">

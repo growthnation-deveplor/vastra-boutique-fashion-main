@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useStore } from "../hooks/use-store";
 import { getProductById, getProductsByCategory, formatPrice, getDiscountPercent } from "../lib/products-db";
@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs"
 import { Card } from "../components/ui/card";
 import { Input } from "../components/ui/input";
 import { Textarea } from "../components/ui/textarea";
-import { createDbEnquiry } from "../lib/api/products.functions";
+import { createDbEnquiry, checkAdminAuth } from "../lib/api/products.functions";
 import {
   Heart,
   ShoppingBag,
@@ -20,6 +20,7 @@ import {
   ShieldCheck,
   Star,
   ChevronRight,
+  Settings,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -65,6 +66,17 @@ function ProductDetails() {
   const [selectedSize, setSelectedSize] = useState(product.sizes[0] || "");
   const [selectedColor, setSelectedColor] = useState(product.colors[0] || { name: "", hex: "" });
   const [quantity, setQuantity] = useState(1);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    checkAdminAuth()
+      .then((res) => {
+        if (res.isAuthenticated) {
+          setIsAdmin(true);
+        }
+      })
+      .catch((err) => console.error(err));
+  }, []);
 
   // Reviews list state (initialized with mock reviews)
   const [reviewsList, setReviewsList] = useState<Review[]>([
@@ -375,6 +387,19 @@ function ProductDetails() {
                 Buy it Now
               </Button>
             </div>
+
+            {isAdmin && (
+              <Button
+                asChild
+                size="lg"
+                className="w-full gap-2 h-12 rounded-full bg-amber-600 hover:bg-amber-700 text-white font-bold transition-all"
+              >
+                <Link to="/admin/products/$id/edit" params={{ id: String(product.id) }} className="flex items-center justify-center gap-2">
+                  <Settings className="h-4 w-4" />
+                  Edit Outfit (Admin Mode)
+                </Link>
+              </Button>
+            )}
 
             {/* Extra Trust Badges */}
             <div className="border-t border-border/60 pt-5 mt-3 grid gap-3.5 text-xs text-muted-foreground">
