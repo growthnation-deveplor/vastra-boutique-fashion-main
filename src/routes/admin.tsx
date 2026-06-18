@@ -6,7 +6,10 @@ import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin")({
-  beforeLoad: async () => {
+  beforeLoad: async ({ location }) => {
+    if (location.pathname.replace(/\/$/, "") === "/admin/login") {
+      return;
+    }
     try {
       const auth = await checkAdminAuth();
       if (!auth.isAuthenticated) {
