@@ -1168,12 +1168,19 @@ export const COUPONS: Record<string, number> = {
   'FESTIVE30': 0.30  // 30% OFF
 };
 
+export let dynamicProducts: Product[] = [];
+export function setDynamicProducts(list: Product[]) {
+  dynamicProducts = list;
+}
+
 export function getProductById(id: number | string): Product | undefined {
-  return PRODUCTS.find(p => p.id === Number(id));
+  const list = dynamicProducts.length > 0 ? dynamicProducts : PRODUCTS;
+  return list.find(p => p.id === Number(id));
 }
 
 export function getProductsByCategory(categoryId: string): Product[] {
-  return PRODUCTS.filter(p => p.category === categoryId);
+  const list = dynamicProducts.length > 0 ? dynamicProducts : PRODUCTS;
+  return list.filter(p => p.category === categoryId);
 }
 
 export function getDiscountPercent(price: number, discountPrice: number): number {
@@ -1185,24 +1192,29 @@ export function formatPrice(price: number): string {
 }
 
 export function getNewArrivals(): Product[] {
-  return PRODUCTS.filter(p => p.badge === 'new');
+  const list = dynamicProducts.length > 0 ? dynamicProducts : PRODUCTS;
+  return list.filter(p => p.badge === 'new');
 }
 
 export function getTrendingProducts(): Product[] {
-  return PRODUCTS.filter(p => p.badge === 'trending');
+  const list = dynamicProducts.length > 0 ? dynamicProducts : PRODUCTS;
+  return list.filter(p => p.badge === 'trending' || p.badge === 'hot');
 }
 
 export function getBestSelling(): Product[] {
-  return PRODUCTS.filter(p => p.reviews > 100).sort((a, b) => b.reviews - a.reviews);
+  const list = dynamicProducts.length > 0 ? dynamicProducts : PRODUCTS;
+  return list.filter(p => p.reviews > 100 || p.isBestseller).sort((a, b) => (b.reviews || 0) - (a.reviews || 0));
 }
 
 export function searchProducts(query: string): Product[] {
+  const list = dynamicProducts.length > 0 ? dynamicProducts : PRODUCTS;
   const q = query.toLowerCase();
-  return PRODUCTS.filter(p =>
+  return list.filter(p =>
     p.name.toLowerCase().includes(q) ||
     p.category.toLowerCase().includes(q) ||
-    p.categoryName.toLowerCase().includes(q) ||
+    (p.categoryName && p.categoryName.toLowerCase().includes(q)) ||
     p.description.toLowerCase().includes(q) ||
-    p.fabric.toLowerCase().includes(q)
+    (p.fabric && p.fabric.toLowerCase().includes(q))
   );
 }
+

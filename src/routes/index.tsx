@@ -192,7 +192,7 @@ function SectionHeading({ eyebrow, title, text }: { eyebrow: string; title: stri
 }
 
 function Index() {
-  const { toggleWishlist, isInWishlist, addToCart, currentUser } = useStore();
+  const { toggleWishlist, isInWishlist, addToCart, currentUser, products } = useStore();
   const navigate = useNavigate();
 
   const heroImages = [
@@ -234,7 +234,7 @@ function Index() {
   }, [featuredLooks.length]);
 
   // Grab trending outfits from database for the products slider
-  const trendingOutfits = PRODUCTS.filter((p) => p.badge === "trending" || p.badge === "hot").slice(0, 6);
+  const trendingOutfits = products.filter((p) => p.badge === "trending" || p.badge === "hot" || p.isFeatured).slice(0, 6);
 
   const handleWishlistToggle = (e: React.MouseEvent, productId: number) => {
     e.preventDefault();

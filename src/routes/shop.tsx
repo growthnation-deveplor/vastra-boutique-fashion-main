@@ -45,11 +45,11 @@ export const Route = createFileRoute("/shop")({
 function Shop() {
   const navigate = useNavigate({ from: Route.fullPath });
   const searchParams = Route.useSearch() as ShopSearchParams;
-  const { toggleWishlist, isInWishlist, addToCart, currentUser } = useStore();
+  const { toggleWishlist, isInWishlist, addToCart, currentUser, products } = useStore();
 
   // Price range constants
-  const maxPriceInDb = Math.max(...PRODUCTS.map((p) => p.discountPrice));
-  const minPriceInDb = Math.min(...PRODUCTS.map((p) => p.discountPrice));
+  const maxPriceInDb = products.length > 0 ? Math.max(...products.map((p) => p.discountPrice)) : 9999;
+  const minPriceInDb = products.length > 0 ? Math.min(...products.map((p) => p.discountPrice)) : 0;
 
   // Local state for filter sidebar
   const activeSearch = searchParams.search || "";
@@ -67,13 +67,13 @@ function Shop() {
   // Extract all unique colors and sizes for filter UI
   const allSizes = useMemo(() => {
     const sizes = new Set<string>();
-    PRODUCTS.forEach((p) => p.sizes.forEach((s) => sizes.add(s)));
+    products.forEach((p) => p.sizes.forEach((s) => sizes.add(s)));
     return Array.from(sizes).sort();
-  }, []);
+  }, [products]);
 
   const allColors = useMemo(() => {
     const colorMap = new Map<string, string>();
-    PRODUCTS.forEach((p) =>
+    products.forEach((p) =>
       p.colors.forEach((c) => {
         if (!colorMap.has(c.name)) {
           colorMap.set(c.name, c.hex);
@@ -81,11 +81,11 @@ function Shop() {
       })
     );
     return Array.from(colorMap.entries()).map(([name, hex]) => ({ name, hex }));
-  }, []);
+  }, [products]);
 
   // Filter products logic
   const filteredProducts = useMemo(() => {
-    let list = [...PRODUCTS];
+    let list = [...products];
 
     // Search query
     if (activeSearch.trim()) {
@@ -184,10 +184,10 @@ function Shop() {
                 : "text-muted-foreground hover:text-foreground hover:bg-secondary/40"
             }`}
           >
-            All Products ({PRODUCTS.length})
+            All Products ({products.length})
           </button>
           {CATEGORIES.map((cat) => {
-            const catCount = PRODUCTS.filter((p) => p.category === cat.id).length;
+            const catCount = products.filter((p) => p.category === cat.id).length;
             return (
               <button
                 key={cat.id}

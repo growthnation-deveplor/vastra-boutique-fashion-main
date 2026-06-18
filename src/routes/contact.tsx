@@ -8,6 +8,8 @@ import { Label } from "../components/ui/label";
 import { MapPin, Phone, Mail, Clock, MessageSquare, Send } from "lucide-react";
 import { toast } from "sonner";
 
+import { createDbEnquiry } from "../lib/api/products.functions";
+
 export const Route = createFileRoute("/contact")({
   component: ContactPage,
 });
@@ -19,7 +21,7 @@ function ContactPage() {
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
 
-  const handleContactSubmit = (e: React.FormEvent) => {
+  const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!name.trim() || !email.trim() || !subject.trim() || !message.trim()) {
@@ -27,15 +29,31 @@ function ContactPage() {
       return;
     }
 
-    // Simulate sending message
-    toast.success(`Thank you, ${name}! Your message has been sent successfully. We will email you at ${email} shortly.`);
-    
-    // Reset form
-    setName("");
-    setEmail("");
-    setPhone("");
-    setSubject("");
-    setMessage("");
+    const toastId = toast.loading("Sending your message...");
+    try {
+      const res = await createDbEnquiry({
+        data: {
+          name,
+          email,
+          phone,
+          message: `Subject: ${subject}\n\n${message}`,
+        }
+      });
+
+      if (res.success) {
+        toast.success(`Thank you, ${name}! Your message has been sent successfully.`, { id: toastId });
+        setName("");
+        setEmail("");
+        setPhone("");
+        setSubject("");
+        setMessage("");
+      } else {
+        toast.error("Failed to send message. Please try again.", { id: toastId });
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to connect to server.", { id: toastId });
+    }
   };
 
   const contactCards = [

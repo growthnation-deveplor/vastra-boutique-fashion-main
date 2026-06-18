@@ -1,13 +1,15 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { CartItem, Address, User, Order, Pricing, Color } from "../types/store";
-import { getProductById, COUPONS } from "../lib/products-db";
+import { CartItem, Address, User, Order, Pricing, Color, Product } from "../types/store";
+import { getProductById, COUPONS, setDynamicProducts } from "../lib/products-db";
 import { toast } from "sonner";
+import { createDbOrder } from "../lib/api/products.functions";
 
 interface StoreContextType {
   cart: CartItem[];
   wishlist: number[];
   currentUser: User | null;
   orders: Order[];
+  products: Product[];
   addToCart: (productId: number, size: string, color: Color, quantity?: number) => void;
   removeFromCart: (productId: number, size: string, colorName: string) => void;
   updateCartQuantity: (productId: number, size: string, colorName: string, newQuantity: number) => void;
@@ -24,16 +26,29 @@ interface StoreContextType {
   deleteAddress: (addressId: number) => boolean;
   placeOrder: (shippingAddress: Omit<Address, "id">, paymentMethod: "cod" | "card", couponCode?: string | null) => Order | null;
   getLastOrder: () => Order | null;
+  setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
 }
 
 const StoreContext = createContext<StoreContextType | undefined>(undefined);
 
-export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const StoreProvider: React.FC<{ children: React.ReactNode; initialProducts?: Product[] }> = ({ children, initialProducts = [] }) => {
   // --- Initialize states from localStorage ---
   const [cart, setCart] = useState<CartItem[]>([]);
   const [wishlist, setWishlist] = useState<number[]>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [orders, setOrders] = useState<Order[]>([]);
+  const [products, setProducts] = useState<Product[]>(initialProducts);
+
+  useEffect(() => {
+    if (initialProducts && initialProducts.length > 0) {
+      setProducts(initialProducts);
+      setDynamicProducts(initialProducts);
+    }
+  }, [initialProducts]);
+
+  useEffect(() => {
+    setDynamicProducts(products);
+  }, [products]);
 
   // Load initial state client-side only (avoid SSR mismatch)
   useEffect(() => {
@@ -374,6 +389,35 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     // Save last placed order detail to display on confirmation page
     localStorage.setItem("vastra_last_order", JSON.stringify(newOrder));
 
+    // Save order in backend database asynchronously
+    createDbOrder({
+      data: {
+        id: newOrder.orderId,
+        email: newOrder.customerEmail,
+        phone: newOrder.customerPhone,
+        name: newOrder.customerName,
+        addressLine: shippingAddress.addressLine || "",
+        city: shippingAddress.city || "",
+        state: shippingAddress.state || "",
+        pincode: shippingAddress.pincode || "",
+        totalAmount: pricing.total,
+        paymentMethod,
+        paymentStatus: paymentMethod === "cod" ? "Pending" : "Paid",
+        items: orderItems.map(item => ({
+          productId: item.productId,
+          name: item.name,
+          price: item.price,
+          image: item.image,
+          size: item.size,
+          colorName: item.color.name,
+          colorHex: item.color.hex,
+          quantity: item.quantity
+        }))
+      }
+    }).catch(err => {
+      console.error("Failed to store order in database:", err);
+    });
+
     // Clear cart
     clearCart();
 
@@ -398,6 +442,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         wishlist,
         currentUser,
         orders,
+        products,
         addToCart,
         removeFromCart,
         updateCartQuantity,
@@ -414,6 +459,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         deleteAddress,
         placeOrder,
         getLastOrder,
+        setProducts,
       }}
     >
       {children}

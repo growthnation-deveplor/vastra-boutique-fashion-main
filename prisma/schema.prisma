@@ -5,46 +5,85 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Product {
-  id          String   @id @default(uuid())
-  name        String
-  description String?
-  price       Float
-  image       String?
-  categoryId  String
-  category    Category @relation(fields: [categoryId], references: [id])
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
-
-model Category {
-  id        String    @id @default(uuid())
-  name      String
-  image     String?
-  products  Product[]
+  id               Int         @id @default(autoincrement())
+  name             String
+  slug             String      @unique
+  category         String      // matches the hardcoded string identifiers (e.g., party-wear)
+  categoryName     String
+  price            Float
+  discountPrice    Float
+  images           String[]    // Stored as array of strings (Base64 or external URLs)
+  sizes            String[]    // Stored as array of strings
+  colors           Json        // Stored as JSON array of Color object: { name: string, hex: string }
+  fabric           String
+  description      String
+  shortDescription String?
+  sku              String?
+  stock            Int         @default(10)
+  inStock          Boolean     @default(true)
+  badge            String?     // trending, new, sale, hot, null
+  isFeatured       Boolean     @default(false)
+  isNewArrival     Boolean     @default(false)
+  isBestseller     Boolean     @default(false)
+  sortPriority     Int         @default(0)
+  seoTitle         String?
+  seoDescription   String?
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+  orderItems       OrderItem[]
 }
 
 model Order {
-  id           String       @id @default(uuid())
-  email        String
-  createdAt    DateTime     @default(now())
-  items        OrderItem[]
-  totalAmount  Float
+  id            String      @id // VB-XXXXXX format
+  email         String
+  phone         String
+  name          String
+  addressLine   String
+  city          String
+  state         String
+  pincode       String
+  totalAmount   Float
+  paymentMethod String      // cod, card, razorpay
+  paymentStatus String      // Pending, Paid
+  orderStatus   String      // Pending, Confirmed, Shipped, Delivered, Cancelled
+  adminNotes    String?
+  items         OrderItem[]
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 }
 
 model OrderItem {
-  id        String   @id @default(uuid())
+  id        Int     @id @default(autoincrement())
   orderId   String
-  productId String
-  quantity  Int      @default(1)
+  productId Int
+  name      String
   price     Float
+  image     String
+  size      String
+  colorName String
+  colorHex  String
+  quantity  Int
 
-  order   Order   @relation(fields: [orderId], references: [id])
-  product Product @relation(fields: [productId], references: [id])
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
-// Add any additional fields you need for user accounts, wishlist, etc.
+model Enquiry {
+  id               Int      @id @default(autoincrement())
+  name             String
+  email            String
+  phone            String
+  message          String
+  productReference String?  // ID/name of product if submitted from a product details page
+  status           String   @default("New") // New, Contacted, Closed
+  adminNotes       String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+

@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs"
 import { Card } from "../components/ui/card";
 import { Input } from "../components/ui/input";
 import { Textarea } from "../components/ui/textarea";
+import { createDbEnquiry } from "../lib/api/products.functions";
 import {
   Heart,
   ShoppingBag,
@@ -396,10 +397,13 @@ function ProductDetails() {
         {/* Reviews and Description Tabs */}
         <div className="mt-16 border-t border-border/50 pt-10">
           <Tabs defaultValue="details" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 max-w-[400px] rounded-full bg-secondary/40 p-1 mb-8">
+            <TabsList className="grid w-full grid-cols-3 max-w-[550px] rounded-full bg-secondary/40 p-1 mb-8">
               <TabsTrigger value="details" className="rounded-full text-xs font-semibold py-2.5">Specifications</TabsTrigger>
               <TabsTrigger value="reviews" className="rounded-full text-xs font-semibold py-2.5">
                 Reviews ({reviewsList.length})
+              </TabsTrigger>
+              <TabsTrigger value="enquiry" className="rounded-full text-xs font-semibold py-2.5">
+                Enquiry
               </TabsTrigger>
             </TabsList>
             
@@ -533,6 +537,9 @@ function ProductDetails() {
                 </Card>
               </div>
             </TabsContent>
+            <TabsContent value="enquiry" className="animate-fade-rise">
+              <ProductEnquiryForm product={product} />
+            </TabsContent>
           </Tabs>
         </div>
 
@@ -579,5 +586,111 @@ function ProductDetails() {
         )}
       </div>
     </div>
+  );
+}
+
+interface ProductEnquiryFormProps {
+  product: { id: number; name: string };
+}
+
+function ProductEnquiryForm({ product }: ProductEnquiryFormProps) {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [message, setMessage] = useState(
+    `Hi, I would like to inquire about the "${product.name}" (ID: ${product.id}). Please provide more details on availability and sizing.`
+  );
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name.trim() || !email.trim() || !message.trim()) {
+      toast.error("Please fill in all required fields.");
+      return;
+    }
+
+    const toastId = toast.loading("Submitting enquiry...");
+    try {
+      const res = await createDbEnquiry({
+        data: {
+          name,
+          email,
+          phone,
+          message,
+          productReference: `${product.name} (ID: ${product.id})`,
+        },
+      });
+
+      if (res.success) {
+        toast.success("Enquiry submitted successfully! We will contact you soon.", { id: toastId });
+        setName("");
+        setEmail("");
+        setPhone("");
+      } else {
+        toast.error("Failed to submit enquiry. Please try again.", { id: toastId });
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Connection failed.", { id: toastId });
+    }
+  };
+
+  return (
+    <Card className="luxury-panel rounded-2xl p-6 sm:p-8 border-border/50 max-w-xl mx-auto">
+      <h3 className="text-xl font-bold text-foreground mb-1">Product Enquiry</h3>
+      <p className="text-xs text-muted-foreground mb-6">Ask us anything about this outfit's fabric, fit, customization, or delivery time.</p>
+      
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Full Name *</label>
+            <Input
+              type="text"
+              placeholder="Your name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="rounded-xl h-10 text-sm font-medium"
+              required
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Email Address *</label>
+            <Input
+              type="email"
+              placeholder="name@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="rounded-xl h-10 text-sm font-medium"
+              required
+            />
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Phone Number</label>
+          <Input
+            type="tel"
+            placeholder="Your mobile number"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            className="rounded-xl h-10 text-sm font-medium"
+          />
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Your Message *</label>
+          <Textarea
+            placeholder="What would you like to know?"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            className="rounded-xl min-h-[100px] text-sm"
+            required
+          />
+        </div>
+
+        <Button type="submit" variant="hero" className="w-full mt-2 rounded-full h-11 text-xs font-bold gap-2">
+          Submit Enquiry
+        </Button>
+      </form>
+    </Card>
   );
 }

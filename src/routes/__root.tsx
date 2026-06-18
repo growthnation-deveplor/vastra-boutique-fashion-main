@@ -74,6 +74,8 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   );
 }
 
+import { getDbProducts } from "../lib/api/products.functions";
+
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
     meta: [
@@ -120,6 +122,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "canonical", href: siteUrl },
     ],
   }),
+  loader: async () => {
+    try {
+      const products = await getDbProducts();
+      return { products };
+    } catch (e) {
+      console.error("Failed to load products in root loader:", e);
+      return { products: [] };
+    }
+  },
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
@@ -147,10 +158,11 @@ import { Toaster } from "../components/ui/sonner";
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const { products } = Route.useLoaderData();
 
   return (
     <QueryClientProvider client={queryClient}>
-      <StoreProvider>
+      <StoreProvider initialProducts={products}>
         <div className="flex flex-col min-h-screen bg-background">
           <Navbar />
           <main className="flex-grow">
@@ -163,4 +175,5 @@ function RootComponent() {
     </QueryClientProvider>
   );
 }
+
 
