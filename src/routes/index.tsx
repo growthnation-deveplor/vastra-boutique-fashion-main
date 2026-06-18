@@ -307,12 +307,12 @@ function Index() {
                   />
                 </div>
 
-                <div className="luxury-panel grain-overlay relative overflow-hidden rounded-[2rem] p-4 shadow-[var(--shadow-luxury)] sm:p-5">
-                  <div className="absolute inset-x-5 top-5 flex items-center justify-between text-xs uppercase tracking-[0.24em] text-muted-foreground font-semibold z-20">
+                <div className="relative overflow-hidden rounded-[2rem] shadow-[var(--shadow-luxury)] aspect-[4/5] w-full">
+                  <div className="absolute inset-x-5 top-5 flex items-center justify-between text-xs uppercase tracking-[0.24em] text-white/95 font-semibold z-20 drop-shadow-sm">
                     <span>Signature edit</span>
                     <span>Vastra Signature</span>
                   </div>
-                  <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[1.6rem] bg-brand-pearl">
+                  <div className="relative w-full h-full overflow-hidden bg-brand-pearl">
                     {featuredLooks.map((look, idx) => (
                       <div
                         key={look.url}
