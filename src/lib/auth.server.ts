@@ -36,20 +36,29 @@ export function verifyToken(token: string): { email: string; isAdmin: boolean } 
   }
 }
 
+import { getRequest, setResponseHeaders } from "@tanstack/react-start/server";
+
+function parseCookies(cookieHeader: string): Record<string, string> {
+  const list: Record<string, string> = {};
+  if (!cookieHeader) return list;
+  cookieHeader.split(";").forEach((cookie) => {
+    const parts = cookie.split("=");
+    const key = parts.shift()?.trim() ?? "";
+    const value = decodeURIComponent(parts.join("="));
+    if (key) list[key] = value;
+  });
+  return list;
+}
+
 // Cookie Helper: Write
 export async function setAdminSession(token: string) {
   try {
-    const { getEvent, setCookie } = await import("vinxi/http");
-    const event = getEvent();
-    if (event) {
-      setCookie(event, "admin_token", token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        path: "/",
-        sameSite: "lax",
-        maxAge: 60 * 60 * 24, // 1 day
-      });
-    }
+    const isProd = process.env.NODE_ENV === "production";
+    setResponseHeaders(
+      new Headers({
+        "Set-Cookie": `admin_token=${token}; HttpOnly; Path=/; SameSite=Lax${isProd ? "; Secure" : ""}; Max-Age=${60 * 60 * 24}`,
+      })
+    );
   } catch (e) {
     console.error("Failed to set cookie in environment", e);
   }
@@ -58,10 +67,11 @@ export async function setAdminSession(token: string) {
 // Cookie Helper: Read
 export async function getAdminSession(): Promise<{ email: string; isAdmin: boolean } | null> {
   try {
-    const { getEvent, getCookie } = await import("vinxi/http");
-    const event = getEvent();
-    if (!event) return null;
-    const token = getCookie(event, "admin_token");
+    const request = getRequest();
+    if (!request) return null;
+    const cookieHeader = request.headers.get("cookie") ?? "";
+    const cookies = parseCookies(cookieHeader);
+    const token = cookies["admin_token"];
     if (!token) return null;
     return verifyToken(token);
   } catch (e) {
@@ -73,13 +83,11 @@ export async function getAdminSession(): Promise<{ email: string; isAdmin: boole
 // Cookie Helper: Clear
 export async function clearAdminSession() {
   try {
-    const { getEvent, deleteCookie } = await import("vinxi/http");
-    const event = getEvent();
-    if (event) {
-      deleteCookie(event, "admin_token", {
-        path: "/",
-      });
-    }
+    setResponseHeaders(
+      new Headers({
+        "Set-Cookie": "admin_token=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0",
+      })
+    );
   } catch (e) {
     console.error("Failed to clear cookie in environment", e);
   }

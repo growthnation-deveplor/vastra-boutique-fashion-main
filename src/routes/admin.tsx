@@ -1,5 +1,5 @@
 import React from "react";
-import { createFileRoute, Outlet, redirect, Link, useRouter } from "@tanstack/react-router";
+import { createFileRoute, Outlet, redirect, Link, useRouter, useLocation } from "@tanstack/react-router";
 import { checkAdminAuth, adminLogout } from "../lib/api/products.functions";
 import { LayoutDashboard, ShoppingBag, ShoppingCart, MessageSquare, LogOut, ArrowLeft } from "lucide-react";
 import { Button } from "../components/ui/button";
@@ -30,7 +30,12 @@ export const Route = createFileRoute("/admin")({
 });
 
 function AdminLayout() {
+  const location = useLocation();
   const router = useRouter();
+
+  if (location.pathname.replace(/\/$/, "") === "/admin/login") {
+    return <Outlet />;
+  }
 
   const handleLogout = async () => {
     try {
