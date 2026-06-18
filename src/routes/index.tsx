@@ -6,6 +6,7 @@ import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 const purpleLook = { url: "/images/hero/hero-purple-gown.jpeg" };
 const ivoryLook = { url: "/images/hero/hero-ivory-suit.jpeg" };
+const customLook = { url: "/images/hero/hero-custom.png" };
 const redKurta = { url: "/images/products/red-cotton-kurta-set.jpeg" };
 const pinkKurta = { url: "/images/products/pink-cotton-kurta-set.jpeg" };
 const oliveSet = { url: "/images/products/olive-cotton-kurta-set.jpeg" };
@@ -196,6 +197,7 @@ function Index() {
   const navigate = useNavigate();
 
   const heroImages = [
+    customLook.url,
     purpleLook.url,
     ivoryLook.url,
     redKurta.url,
@@ -218,6 +220,7 @@ function Index() {
 
   // Curated slider looks on the right side of the hero section
   const featuredLooks = [
+    { url: customLook.url, title: "Designer Signature Outfit", id: "1" },
     { url: purpleLook.url, title: "Royal Festive Dress", id: "1" },
     { url: ivoryLook.url, title: "Ivory Silk Suit Set", id: "2" },
     { url: pinkKurta.url, title: "Premium Pink Kurta Set", id: "4" },
@@ -283,46 +286,8 @@ function Index() {
               <div className="absolute bottom-0 left-1/2 h-56 w-56 -translate-x-1/2 rounded-full bg-primary/15 blur-3xl" />
             </div>
 
-            <div className="container-shell grid items-center gap-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
-              <div className="max-w-2xl animate-fade-rise">
-                <p className="text-xs font-semibold uppercase tracking-[0.34em] text-primary">
-                  Premium girls fashion boutique
-                </p>
-                <h1 className="mt-5 text-5xl leading-none font-semibold text-balance text-foreground sm:text-6xl lg:text-7xl">
-                  Trendy Fashion for Stylish Girls ✨
-                </h1>
-                <p className="mt-6 max-w-xl text-lg leading-8 text-muted-foreground sm:text-xl">
-                  Discover beautiful, trendy & fashionable outfits for girls with the perfect
-                  mix of comfort, elegance, ethnic charm & modern western styles.
-                </p>
-
-                <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                  <Button variant="hero" size="lg" asChild className="rounded-full">
-                    <Link to="/shop">Shop Collection</Link>
-                  </Button>
-                  <Button variant="luxury" size="lg" asChild className="rounded-full bg-transparent hover:bg-secondary/40 text-foreground border-border">
-                    <a href={callUrl}>Call Support</a>
-                  </Button>
-                </div>
-
-                <div className="mt-10 grid gap-4 sm:grid-cols-3">
-                  {[
-                    { value: "Curated", label: "Boutique-led looks" },
-                    { value: "Premium", label: "Fabric & finish" },
-                    { value: "Easy", label: "Seamless checkout" },
-                  ].map((item) => (
-                    <div
-                      key={item.label}
-                      className="luxury-panel rounded-2xl px-4 py-4 text-left"
-                    >
-                      <p className="text-2xl font-semibold text-foreground">{item.value}</p>
-                      <p className="mt-1 text-xs text-muted-foreground font-semibold">{item.label}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Signature Look Frame */}
+            <div className="container-shell grid items-center gap-12 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
+              {/* Signature Look Frame (Left on Desktop) */}
               <div className="relative min-h-[34rem] animate-fade-rise">
                 <div className="absolute right-2 top-0 hidden w-44 rounded-[1.6rem] border border-border/70 bg-card/90 p-3 shadow-[var(--shadow-soft)] md:block animate-float-down">
                   <img
@@ -381,6 +346,45 @@ function Index() {
                       </Button>
                     </div>
                   </div>
+                </div>
+              </div>
+
+              {/* Text Intro Block (Right on Desktop) */}
+              <div className="max-w-2xl animate-fade-rise">
+                <p className="text-xs font-semibold uppercase tracking-[0.34em] text-primary">
+                  Premium girls fashion boutique
+                </p>
+                <h1 className="mt-5 text-5xl leading-none font-semibold text-balance text-foreground sm:text-6xl lg:text-7xl">
+                  Trendy Fashion for Stylish Girls ✨
+                </h1>
+                <p className="mt-6 max-w-xl text-lg leading-8 text-muted-foreground sm:text-xl">
+                  Discover beautiful, trendy & fashionable outfits for girls with the perfect
+                  mix of comfort, elegance, ethnic charm & modern western styles.
+                </p>
+
+                <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                  <Button variant="hero" size="lg" asChild className="rounded-full">
+                    <Link to="/shop">Shop Collection</Link>
+                  </Button>
+                  <Button variant="luxury" size="lg" asChild className="rounded-full bg-transparent hover:bg-secondary/40 text-foreground border-border">
+                    <a href={callUrl}>Call Support</a>
+                  </Button>
+                </div>
+
+                <div className="mt-10 grid gap-4 sm:grid-cols-3">
+                  {[
+                    { value: "Curated", label: "Boutique-led looks" },
+                    { value: "Premium", label: "Fabric & finish" },
+                    { value: "Easy", label: "Seamless checkout" },
+                  ].map((item) => (
+                    <div
+                      key={item.label}
+                      className="luxury-panel rounded-2xl px-4 py-4 text-left"
+                    >
+                      <p className="text-2xl font-semibold text-foreground">{item.value}</p>
+                      <p className="mt-1 text-xs text-muted-foreground font-semibold">{item.label}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>

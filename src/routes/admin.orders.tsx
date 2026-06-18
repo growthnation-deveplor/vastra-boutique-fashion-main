@@ -4,6 +4,7 @@ import { getDbOrders, updateOrderStatus } from "../lib/api/products.functions";
 import { Card } from "../components/ui/card";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
+import { Textarea } from "../components/ui/textarea";
 import { 
   Search, 
   ShoppingCart, 

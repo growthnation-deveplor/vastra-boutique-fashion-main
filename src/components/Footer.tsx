@@ -65,7 +65,7 @@ export const Footer: React.FC = () => {
               Exchange Policy
             </Link>
             <Link to="/refund-policy" className="text-muted-foreground hover:text-primary transition-colors">
-              Refund Policy
+              Replacement Policy
             </Link>
             <Link to="/privacy-policy" className="text-muted-foreground hover:text-primary transition-colors">
               Privacy Policy
@@ -97,6 +97,12 @@ export const Footer: React.FC = () => {
             <p className="flex flex-col">
               <span className="text-xs uppercase tracking-wider text-muted-foreground/60">Store Owner</span>
               <span className="font-medium text-foreground mt-0.5">Soniya Sharma</span>
+            </p>
+            <p className="flex flex-col">
+              <span className="text-xs uppercase tracking-wider text-muted-foreground/60">Boutique Address</span>
+              <span className="font-medium text-foreground mt-0.5 leading-normal text-xs">
+                Shop No. 111 Centre Plaza, kashida Gali, main market, Sanganer, Jaipur - 302033
+              </span>
             </p>
             <a
               href={`${whatsappUrl}?text=${encodeURIComponent("Hi Vastra Butique, I need styling assistance.")}`}

@@ -28,7 +28,7 @@ function ExchangePolicyPage() {
 
         <Card className="luxury-panel rounded-2xl p-6 sm:p-8 border-border/50 flex flex-col gap-6 text-sm leading-8 font-medium text-muted-foreground">
           <p className="text-foreground font-semibold">
-            At Vastra Butique, we are want to ensure you get the absolute perfect fit. If the garment you ordered doesn&apos;t fit quite right, we offer a hassle-free exchange service.
+            At Vastra Butique, we want to ensure you get the absolute perfect fit. If the garment you ordered doesn&apos;t fit quite right, we offer a hassle-free exchange service. Please note that we do not offer monetary refunds; all return requests are processed strictly via product replacement, design exchange, or boutique store credit.
           </p>
 
           <div>

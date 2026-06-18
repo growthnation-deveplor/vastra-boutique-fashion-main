@@ -66,7 +66,7 @@ function TermsOfServicePage() {
               4. Return, Exchange & Delivery Conditions
             </h3>
             <p>
-              All purchases, deliveries, exchanges, and return claims are governed strictly by our active <Link to="/shipping-policy" className="text-primary hover:underline font-semibold">Shipping Policy</Link>, <Link to="/exchange-policy" className="text-primary hover:underline font-semibold">Exchange Policy</Link>, and <Link to="/refund-policy" className="text-primary hover:underline font-semibold">Refund Policy</Link> documents.
+              All purchases, deliveries, exchanges, and return claims are governed strictly by our active <Link to="/shipping-policy" className="text-primary hover:underline font-semibold">Shipping Policy</Link>, <Link to="/exchange-policy" className="text-primary hover:underline font-semibold">Exchange Policy</Link>, and <Link to="/refund-policy" className="text-primary hover:underline font-semibold">Replacement Policy</Link> documents.
             </p>
           </div>
 

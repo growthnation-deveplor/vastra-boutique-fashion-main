@@ -62,9 +62,9 @@ function ContactPage() {
       title: "Our Boutique Studio",
       content: (
         <p className="mt-1 text-sm text-muted-foreground leading-relaxed">
-          Vastra Butique Studio,<br />
-          Johri Bazar Road, Near Hawa Mahal,<br />
-          Jaipur, Rajasthan — 302002
+          Shop No. 111 Centre Plaza,<br />
+          kashida Gali, main market,<br />
+          Sanganer, Jaipur — 302033
         </p>
       ),
     },

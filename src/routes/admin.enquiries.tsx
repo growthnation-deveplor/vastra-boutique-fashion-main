@@ -4,6 +4,7 @@ import { getDbEnquiries, updateEnquiryStatus, deleteEnquiry } from "../lib/api/p
 import { Card } from "../components/ui/card";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
+import { Textarea } from "../components/ui/textarea";
 import { 
   Search, 
   MessageSquare, 

@@ -1,8 +1,10 @@
-import React, { useState } from "react";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import React, { useState, useEffect } from "react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 import { useStore } from "../hooks/use-store";
 import { getProductById, formatPrice } from "../lib/products-db";
+import { getDbOrdersByEmail } from "../lib/api/products.functions";
+
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Card } from "../components/ui/card";
@@ -132,10 +134,66 @@ function AccountPage() {
     }
   };
 
+  const [dbOrders, setDbOrders] = useState<any[]>([]);
+  const [loadingOrders, setLoadingOrders] = useState(false);
+
+  useEffect(() => {
+    if (currentUser?.email) {
+      setLoadingOrders(true);
+      getDbOrdersByEmail({ data: { email: currentUser.email } })
+        .then((res) => {
+          setDbOrders(res || []);
+        })
+        .catch((err) => {
+          console.error("Failed to fetch order history from database:", err);
+        })
+        .finally(() => {
+          setLoadingOrders(false);
+        });
+    } else {
+      setDbOrders([]);
+    }
+  }, [currentUser?.email]);
+
   // Filter orders related to this logged in user
-  const userOrders = currentUser
-    ? orders.filter((o) => o.userId === currentUser.id)
-    : [];
+  const userOrders = dbOrders.map((o) => ({
+    orderId: o.id,
+    userId: currentUser?.id || null,
+    customerName: o.name,
+    customerEmail: o.email,
+    customerPhone: o.phone,
+    items: o.items.map((item: any) => ({
+      productId: item.productId,
+      name: item.name,
+      price: item.price,
+      image: item.image,
+      size: item.size,
+      color: { name: item.colorName, hex: item.colorHex },
+      quantity: item.quantity,
+    })),
+    pricing: {
+      subtotal: o.totalAmount,
+      discount: 0,
+      shipping: 0,
+      tax: 0,
+      total: o.totalAmount,
+    },
+    shippingAddress: {
+      id: Date.now(),
+      name: o.name,
+      phone: o.phone,
+      email: o.email,
+      addressLine: o.addressLine,
+      city: o.city,
+      state: o.state,
+      pincode: o.pincode,
+    },
+    paymentMethod: o.paymentMethod,
+    paymentStatus: o.paymentStatus,
+    orderStatus: o.orderStatus,
+    createdAt: o.createdAt,
+  }));
+
 
 
 
@@ -482,7 +540,12 @@ function AccountPage() {
               <div className="flex flex-col gap-6 animate-fade-rise">
                 <h2 className="text-xl font-bold text-foreground">Order History ({userOrders.length})</h2>
 
-                {userOrders.length === 0 ? (
+                {loadingOrders ? (
+                  <Card className="luxury-panel rounded-2xl p-10 text-center flex flex-col items-center justify-center gap-4 border-border/50">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+                    <p className="text-sm text-muted-foreground font-semibold mt-2">Retrieving your order history...</p>
+                  </Card>
+                ) : userOrders.length === 0 ? (
                   <Card className="luxury-panel rounded-2xl p-10 text-center flex flex-col items-center justify-center gap-4 border-border/50">
                     <div className="text-4xl">🧾</div>
                     <div>

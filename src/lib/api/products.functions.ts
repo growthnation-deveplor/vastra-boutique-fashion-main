@@ -354,6 +354,24 @@ export const getDbOrders = createServerFn({ method: "GET" })
     });
   });
 
+export const getDbOrdersByEmail = createServerFn({ method: "POST" })
+  .inputValidator(z.object({ email: z.string().email() }))
+  .handler(async ({ data }) => {
+    return await prisma.order.findMany({
+      where: {
+        email: {
+          equals: data.email,
+          mode: "insensitive",
+        },
+      },
+      include: {
+        items: true,
+      },
+      orderBy: { createdAt: "desc" },
+    });
+  });
+
+
 export const updateOrderStatus = createServerFn({ method: "POST" })
   .inputValidator(
     z.object({
