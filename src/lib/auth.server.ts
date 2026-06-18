@@ -36,29 +36,19 @@ export function verifyToken(token: string): { email: string; isAdmin: boolean } 
   }
 }
 
-import { getRequest, setResponseHeaders } from "@tanstack/react-start/server";
-
-function parseCookies(cookieHeader: string): Record<string, string> {
-  const list: Record<string, string> = {};
-  if (!cookieHeader) return list;
-  cookieHeader.split(";").forEach((cookie) => {
-    const parts = cookie.split("=");
-    const key = parts.shift()?.trim() ?? "";
-    const value = decodeURIComponent(parts.join("="));
-    if (key) list[key] = value;
-  });
-  return list;
-}
+import { getCookie, setCookie, deleteCookie } from "@tanstack/react-start/server";
 
 // Cookie Helper: Write
 export async function setAdminSession(token: string) {
   try {
     const isProd = process.env.NODE_ENV === "production";
-    setResponseHeaders(
-      new Headers({
-        "Set-Cookie": `admin_token=${token}; HttpOnly; Path=/; SameSite=Lax${isProd ? "; Secure" : ""}; Max-Age=${60 * 60 * 24}`,
-      })
-    );
+    setCookie("admin_token", token, {
+      httpOnly: true,
+      path: "/",
+      sameSite: "lax",
+      secure: isProd,
+      maxAge: 60 * 60 * 24, // 24 hours
+    });
   } catch (e) {
     console.error("Failed to set cookie in environment", e);
   }
@@ -67,11 +57,7 @@ export async function setAdminSession(token: string) {
 // Cookie Helper: Read
 export async function getAdminSession(): Promise<{ email: string; isAdmin: boolean } | null> {
   try {
-    const request = getRequest();
-    if (!request) return null;
-    const cookieHeader = request.headers.get("cookie") ?? "";
-    const cookies = parseCookies(cookieHeader);
-    const token = cookies["admin_token"];
+    const token = getCookie("admin_token");
     if (!token) return null;
     return verifyToken(token);
   } catch (e) {
@@ -83,12 +69,11 @@ export async function getAdminSession(): Promise<{ email: string; isAdmin: boole
 // Cookie Helper: Clear
 export async function clearAdminSession() {
   try {
-    setResponseHeaders(
-      new Headers({
-        "Set-Cookie": "admin_token=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0",
-      })
-    );
+    deleteCookie("admin_token", {
+      path: "/",
+    });
   } catch (e) {
     console.error("Failed to clear cookie in environment", e);
   }
 }
+
