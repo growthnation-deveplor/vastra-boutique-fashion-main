@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { createProduct, getDbProducts } from "../lib/api/products.functions";
 import { Card } from "../components/ui/card";
 import { Input } from "../components/ui/input";
