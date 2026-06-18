@@ -93,6 +93,8 @@ export const seedDatabase = createServerFn({ method: "POST" })
           badge: p.badge,
           inStock: p.inStock,
           stock: p.inStock ? 15 : 0,
+          rating: p.rating || 4.5,
+          reviews: p.reviews || 0,
           isFeatured: p.badge === "trending" || p.badge === "hot",
           isNewArrival: p.badge === "new",
           isBestseller: p.reviews && p.reviews > 100 ? true : false,
@@ -131,6 +133,8 @@ export const getDbProducts = createServerFn({ method: "GET" })
           badge: p.badge,
           inStock: p.inStock,
           stock: p.inStock ? 15 : 0,
+          rating: p.rating || 4.5,
+          reviews: p.reviews || 0,
           isFeatured: p.badge === "trending" || p.badge === "hot",
           isNewArrival: p.badge === "new",
           isBestseller: p.reviews && p.reviews > 100 ? true : false,
@@ -428,3 +432,12 @@ export const deleteEnquiry = createServerFn({ method: "POST" })
     });
     return { success: true };
   });
+
+export const getDbProductById = createServerFn({ method: "GET" })
+  .inputValidator(z.object({ id: z.number().int() }))
+  .handler(async ({ data }) => {
+    return await prisma.product.findUnique({
+      where: { id: data.id },
+    });
+  });
+

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { createFileRoute, Link, useNavigate, redirect } from "@tanstack/react-router";
-import { updateProduct, getDbProducts } from "../lib/api/products.functions";
-import { prisma } from "../lib/db";
+import { updateProduct, getDbProducts, getDbProductById } from "../lib/api/products.functions";
 import { Card } from "../components/ui/card";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
@@ -22,9 +21,7 @@ import { useStore } from "../hooks/use-store";
 export const Route = createFileRoute("/admin/products/$id/edit")({
   loader: async ({ params }) => {
     try {
-      const product = await prisma.product.findUnique({
-        where: { id: Number(params.id) },
-      });
+      const product = await getDbProductById({ data: { id: Number(params.id) } });
       if (!product) {
         throw redirect({ to: "/admin/products" });
       }

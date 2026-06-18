@@ -28,6 +28,8 @@ model Product {
   stock            Int         @default(10)
   inStock          Boolean     @default(true)
   badge            String?     // trending, new, sale, hot, null
+  rating           Float       @default(4.5)
+  reviews          Int         @default(0)
   isFeatured       Boolean     @default(false)
   isNewArrival     Boolean     @default(false)
   isBestseller     Boolean     @default(false)
