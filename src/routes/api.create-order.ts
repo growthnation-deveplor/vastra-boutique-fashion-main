@@ -46,9 +46,17 @@ export const Route = createFileRoute("/api/create-order")({
           });
         } catch (error: any) {
           console.error("Error creating Razorpay order:", error);
+          const errorMessage =
+            error.error?.description ||
+            error.description ||
+            error.message ||
+            "Internal Server Error";
           return new Response(
-            JSON.stringify({ error: error.message || "Internal Server Error" }),
-            { status: 500, headers: { "Content-Type": "application/json" } }
+            JSON.stringify({ error: errorMessage }),
+            { 
+              status: error.statusCode || 500, 
+              headers: { "Content-Type": "application/json" } 
+            }
           );
         }
       },
