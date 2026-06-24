@@ -15,7 +15,7 @@ const burgundyGown = { url: "/images/products/burgundy-kids-gown.jpeg" };
 const mintKids = { url: "/images/products/mint-kids-lehenga.jpeg" };
 const sageRomper = { url: "/images/products/sage-kids-romper.jpeg" };
 const navyDress = { url: "/images/products/navy-kids-dress.jpeg" };
-import { Heart, ShoppingBag, Eye, Star, ArrowRight, Sparkles } from "lucide-react";
+import { Heart, ShoppingBag, Eye, Star, ArrowRight, Sparkles, Scissors, Flower, Layers, Crown, ShieldCheck, Truck } from "lucide-react";
 
 const siteUrl = "https://vastrabutique.shop";
 const whatsappUrl = "https://wa.me/917976396802";
@@ -62,40 +62,33 @@ const reasons = [
 
 const homeCategories = [
   {
-    title: "Trendy Dresses",
-    description: "Statement boutique dresses with rich color, graceful flow and festive elegance.",
+    title: "Women's Designer Blouses",
+    description: "Handcrafted boutique blouses with premium embroidery.",
     image: purpleLook.url,
     category: "party-wear",
+    icon: <Scissors className="h-5 w-5 text-[#B89047]" />,
   },
   {
-    title: "Ethnic Wear",
-    description: "Soft festive ethnic styles designed for celebrations, comfort and timeless charm.",
+    title: "Banarasi Blouses",
+    description: "Elegant Banarasi silk blouses with traditional patterns.",
     image: ivoryLook.url,
     category: "ethnic-wear",
+    icon: <Flower className="h-5 w-5 text-[#B89047]" />,
   },
   {
-    title: "Western Wear",
-    description: "Clean silhouettes and trendy everyday fashion with a polished boutique touch.",
-    image: pinkKurta.url,
-    category: "western-wear",
-  },
-  {
-    title: "Party Wear",
-    description: "Special occasion looks with dramatic silhouettes, volume and premium detailing.",
-    image: burgundyGown.url,
-    category: "party-wear",
-  },
-  {
-    title: "Stylish Outfits",
-    description: "Fashion-forward wardrobe pieces for girls who love comfort with standout style.",
-    image: oliveSet.url,
-    category: "casual-wear",
-  },
-  {
-    title: "Boutique Special Collection",
-    description: "Exclusive boutique picks curated for gifting, special moments and standout styling.",
+    title: "Kids Dresses",
+    subtitle: "(6 Months – 12 Years)",
+    description: "Cute and stylish boutique dresses for young girls.",
     image: magentaKids.url,
+    category: "party-wear",
+    icon: <Layers className="h-5 w-5 text-[#B89047]" />,
+  },
+  {
+    title: "Festive Collection",
+    description: "Special occasion outfits for premium ethnic styling.",
+    image: customLook.url,
     category: "boutique-collection",
+    icon: <Sparkles className="h-5 w-5 text-[#B89047]" />,
   },
 ];
 
@@ -286,29 +279,11 @@ function Index() {
               <div className="absolute bottom-0 left-1/2 h-56 w-56 -translate-x-1/2 rounded-full bg-primary/15 blur-3xl" />
             </div>
 
-            <div className="container-shell grid items-center gap-12 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
-              {/* Signature Look Frame (Left on Desktop) */}
-              <div className="relative min-h-[34rem] animate-fade-rise">
-                <div className="absolute right-2 top-0 hidden w-44 rounded-[1.6rem] border border-border/70 bg-card/90 p-3 shadow-[var(--shadow-soft)] md:block animate-float-down">
-                  <img
-                    src={ivoryLook.url}
-                    alt="Ivory festive boutique outfit"
-                    className="aspect-[4/5] w-full rounded-[1.1rem] object-cover"
-                    loading="lazy"
-                  />
-                </div>
-
-                <div className="absolute -left-2 bottom-7 hidden w-40 rounded-[1.6rem] border border-border/70 bg-card/90 p-3 shadow-[var(--shadow-soft)] md:block animate-float-up">
-                  <img
-                    src={navyDress.url}
-                    alt="Navy dress from Vastra Butique"
-                    className="aspect-[4/5] w-full rounded-[1.1rem] object-cover"
-                    loading="lazy"
-                  />
-                </div>
-
-                <div className="relative overflow-hidden rounded-[2rem] shadow-[var(--shadow-luxury)] aspect-[4/5] w-full">
-                  <div className="absolute inset-x-5 top-5 flex items-center justify-between text-xs uppercase tracking-[0.24em] text-white/95 font-semibold z-20 drop-shadow-sm">
+            <div className="container-shell grid items-center gap-12 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] pt-8 pb-12">
+              {/* Image Slider (now on the left) */}
+              <div className="relative min-h-[34rem] animate-fade-rise flex items-center justify-center">
+                <div className="relative overflow-hidden rounded-[1.6rem] shadow-[var(--shadow-luxury)] aspect-[4/5] w-full max-w-[420px]">
+                  <div className="absolute inset-x-5 top-5 flex items-center justify-between text-[10px] uppercase tracking-[0.24em] text-white/95 font-bold z-20 drop-shadow-md">
                     <span>Signature edit</span>
                     <span>Vastra Signature</span>
                   </div>
@@ -317,9 +292,7 @@ function Index() {
                       <div
                         key={look.url}
                         className={`absolute inset-0 transition-all duration-1000 ease-in-out ${
-                          idx === featuredLookIdx 
-                            ? "opacity-100 scale-100" 
-                            : "opacity-0 scale-95 pointer-events-none"
+                          idx === featuredLookIdx ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none"
                         }`}
                       >
                         <img
@@ -334,14 +307,14 @@ function Index() {
                   <div className="absolute inset-x-6 bottom-6 rounded-2xl border border-white/40 bg-background/85 p-4 backdrop-blur-xl z-20 shadow-lg">
                     <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
                       <div className="min-w-0">
-                        <p className="truncate text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+                        <p className="truncate text-[10px] font-bold uppercase tracking-[0.24em] text-[#B89047]">
                           Signature boutique look
                         </p>
-                        <p className="mt-1 truncate text-lg font-bold text-foreground transition-all duration-300">
+                        <p className="mt-1 truncate text-base font-extrabold text-[#2F1B12] transition-all duration-300">
                           {featuredLooks[featuredLookIdx].title}
                         </p>
                       </div>
-                      <Button variant="hero" size="sm" asChild className="rounded-full">
+                      <Button variant="hero" size="sm" asChild className="rounded-full bg-[#2F1B12] text-white hover:bg-[#432A1F] h-8 text-[10px] px-3 font-bold border-0">
                         <Link to="/product/$id" params={{ id: featuredLooks[featuredLookIdx].id }}>View Details</Link>
                       </Button>
                     </div>
@@ -349,43 +322,56 @@ function Index() {
                 </div>
               </div>
 
-              {/* Text Intro Block (Right on Desktop) */}
-              <div className="max-w-2xl animate-fade-rise">
-                <p className="text-xs font-semibold uppercase tracking-[0.34em] text-primary">
-                  Premium girls fashion boutique
+              {/* Text Block (now on the right) */}
+              <div className="max-w-2xl animate-fade-rise text-center lg:text-right flex flex-col items-center lg:items-end">
+                <p className="text-xs font-bold uppercase tracking-[0.34em] text-[#B89047]">
+                  Exquisite Ethnic Elegance
                 </p>
-                <h1 className="mt-5 text-5xl leading-none font-semibold text-balance text-foreground sm:text-6xl lg:text-7xl">
-                  Trendy Fashion for Stylish Girls ✨
+                <h1 className="mt-4 font-display text-5xl leading-tight font-medium text-[#2F1B12] sm:text-6xl lg:text-7.5xl text-balance">
+                  Timeless Luxury for
+                  <br />
+                  <span className="font-display italic text-[#B89047] font-semibold">Every Woman</span>
                 </h1>
-                <p className="mt-6 max-w-xl text-lg leading-8 text-muted-foreground sm:text-xl">
-                  Discover beautiful, trendy & fashionable outfits for girls with the perfect
-                  mix of comfort, elegance, ethnic charm & modern western styles.
+                <div className="my-5 flex items-center justify-center lg:justify-end gap-2.5 text-[#B89047]/70">
+                  <div className="h-[1px] w-10 bg-current" />
+                  <span className="text-[10px] transform rotate-45">✦</span>
+                  <div className="h-[1px] w-10 bg-current" />
+                </div>
+                <p className="max-w-xl text-base sm:text-lg leading-relaxed text-muted-foreground font-semibold">
+                  Hand‑crafted blouses, couture kids wear, and exclusive boutique collections that celebrate heritage with modern flair.
                 </p>
-
-                <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                  <Button variant="hero" size="lg" asChild className="rounded-full">
-                    <Link to="/shop">Shop Collection</Link>
+                <div className="mt-8 flex flex-col gap-3.5 sm:flex-row w-full sm:w-auto">
+                  <Button
+                    variant="hero"
+                    size="lg"
+                    asChild
+                    className="rounded-none bg-[#2F1B12] text-white hover:bg-[#432A1F] uppercase tracking-[0.2em] text-[10px] font-bold py-4 px-8 h-auto border-0 cursor-pointer shadow-md"
+                  >
+                    <Link to="/shop">Shop Now</Link>
                   </Button>
-                  <Button variant="luxury" size="lg" asChild className="rounded-full bg-transparent hover:bg-secondary/40 text-foreground border-border">
-                    <a href={callUrl}>Call Support</a>
+                  <Button
+                    variant="luxury"
+                    size="lg"
+                    asChild
+                    className="rounded-none bg-transparent hover:bg-[#2F1B12]/5 text-[#2F1B12] border border-[#2F1B12] uppercase tracking-[0.2em] text-[10px] font-bold py-4 px-8 h-auto cursor-pointer"
+                  >
+                    <Link to="/shop">Explore Collection</Link>
                   </Button>
                 </div>
+              </div>
 
-                <div className="mt-10 grid gap-4 sm:grid-cols-3">
-                  {[
-                    { value: "Curated", label: "Boutique-led looks" },
-                    { value: "Premium", label: "Fabric & finish" },
-                    { value: "Easy", label: "Seamless checkout" },
-                  ].map((item) => (
-                    <div
-                      key={item.label}
-                      className="luxury-panel rounded-2xl px-4 py-4 text-left"
-                    >
-                      <p className="text-2xl font-semibold text-foreground">{item.value}</p>
-                      <p className="mt-1 text-xs text-muted-foreground font-semibold">{item.label}</p>
-                    </div>
-                  ))}
-                </div>
+              {/* Slider Dots Indicator */}
+              <div className="mt-10 flex items-center gap-2">
+                {featuredLooks.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setFeaturedLookIdx(idx)}
+                    className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                      idx === featuredLookIdx ? "w-6 bg-[#2F1B12]" : "w-2 bg-[#2F1B12]/20 hover:bg-[#2F1B12]/40"
+                    }`}
+                    aria-label={`Go to slide ${idx + 1}`}
+                  />
+                ))}
               </div>
             </div>
           </section>
@@ -419,52 +405,104 @@ function Index() {
           </section>
 
           {/* Category Collection Grid */}
-          <section id="collection" className="section-shell">
+          <section id="collection" className="section-shell bg-[#FAF7F2]/30 border-t border-border/50">
             <div className="container-shell">
-              <SectionHeading
-                eyebrow="Shop By Categories"
-                title="Curated collections with premium framing and instant details."
-                text="Each featured look is presented with a boutique-style frame, clear visibility and direct selectors for fast shopping."
-              />
+              <div className="mx-auto max-w-3xl text-center mb-12 animate-fade-rise">
+                <h2 className="text-2xl sm:text-3xl font-display font-medium uppercase tracking-[0.2em] text-[#2F1B12] flex items-center justify-center gap-3">
+                  <span className="text-[#B89047] text-lg sm:text-xl">⤛</span>
+                  Shop By Category
+                  <span className="text-[#B89047] text-lg sm:text-xl">⤜</span>
+                </h2>
+              </div>
 
-              <div className="mt-14 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+              <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
                 {homeCategories.map((product, index) => (
-                  <article
+                  <Link
                     key={product.title}
-                    className="luxury-panel group overflow-hidden rounded-[1.6rem] animate-fade-rise"
+                    to="/shop"
+                    search={{ category: product.category }}
+                    className="group flex flex-col items-center animate-fade-rise hover:no-underline"
                     style={{ animationDelay: `${index * 80}ms` }}
                   >
-                    <div className="overflow-hidden p-3">
-                      <Link
-                        to="/shop"
-                        search={{ category: product.category }}
-                        className="luxury-outline overflow-hidden rounded-[1.25rem] bg-brand-pearl p-2 block"
-                      >
-                        <img
-                          src={product.image}
-                          alt={product.title}
-                          className="aspect-[4/5] w-full rounded-[1rem] object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
-                          loading="lazy"
-                        />
-                      </Link>
-                    </div>
-                    <div className="px-5 pb-5 pt-1">
-                      <div className="flex items-center justify-between gap-3">
-                        <h3 className="text-xl font-bold text-foreground">{product.title}</h3>
-                        <span className="rounded-full border border-border bg-background px-3 py-1 text-[0.65rem] font-bold uppercase tracking-[0.24em] text-muted-foreground">
-                          Collection
-                        </span>
+                    {/* Image container with rounded top and floating icon */}
+                    <div className="relative w-full aspect-[4/5] rounded-t-[2.5rem] overflow-hidden bg-brand-pearl shadow-md">
+                      <img
+                        src={product.image}
+                        alt={product.title}
+                        className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.05]"
+                        loading="lazy"
+                      />
+                      {/* Floating Circle Icon */}
+                      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-12 h-12 rounded-full bg-white border border-[#B89047]/50 shadow-md flex items-center justify-center z-10 transition-transform duration-300 group-hover:scale-110">
+                        {product.icon}
                       </div>
-                      <p className="mt-3 text-xs leading-6 text-muted-foreground font-semibold">
-                        {product.description}
-                      </p>
-                      <Button className="mt-5 w-full rounded-full" variant="luxury" asChild>
-                        <Link to="/shop" search={{ category: product.category }}>
-                          Explore Outfits
-                        </Link>
-                      </Button>
                     </div>
-                  </article>
+
+                    {/* Centered text descriptions */}
+                    <div className="mt-8 text-center px-2 flex flex-col items-center">
+                      <h3 className="text-base font-display font-bold text-[#2F1B12] group-hover:text-[#B89047] transition-colors leading-tight">
+                        {product.title}
+                      </h3>
+                      {product.subtitle && (
+                        <p className="mt-1 text-[11px] font-semibold text-[#B89047] uppercase tracking-wider">
+                          {product.subtitle}
+                        </p>
+                      )}
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* Highlights Row Section */}
+          <section className="py-12 bg-[#FAF7F2] border-y border-border/60">
+            <div className="container-shell">
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-6 divide-y md:divide-y-0 md:divide-x divide-border/60">
+                {[
+                  {
+                    icon: <Crown className="h-7 w-7 text-[#B89047]" />,
+                    title: "Premium Quality",
+                    desc: "Finest fabrics & perfect stitching",
+                  },
+                  {
+                    icon: <Scissors className="h-7 w-7 text-[#B89047]" />,
+                    title: "Custom Stitching",
+                    desc: "Made just for you",
+                  },
+                  {
+                    icon: <Heart className="h-7 w-7 text-[#B89047]" />,
+                    title: "Handmade Designs",
+                    desc: "Unique designs crafted with love",
+                  },
+                  {
+                    icon: <ShieldCheck className="h-7 w-7 text-[#B89047]" />,
+                    title: "Secure Payments",
+                    desc: "100% safe & trusted",
+                  },
+                  {
+                    icon: <Truck className="h-7 w-7 text-[#B89047]" />,
+                    title: "Fast Delivery",
+                    desc: "Quick delivery at your doorstep",
+                  },
+                ].map((item, idx) => (
+                  <div 
+                    key={item.title} 
+                    className={`flex flex-col items-center text-center px-4 animate-fade-rise ${
+                      idx % 2 === 1 && idx < 2 ? "pt-0" : idx >= 2 ? "pt-6 md:pt-0" : "pt-0"
+                    }`}
+                    style={{ animationDelay: `${idx * 70}ms` }}
+                  >
+                    <div className="mb-3.5 flex items-center justify-center">
+                      {item.icon}
+                    </div>
+                    <h4 className="text-xs font-bold uppercase tracking-widest text-[#2F1B12] font-display">
+                      {item.title}
+                    </h4>
+                    <p className="mt-1.5 text-[11px] leading-relaxed text-muted-foreground font-semibold max-w-[160px]">
+                      {item.desc}
+                    </p>
+                  </div>
                 ))}
               </div>
             </div>

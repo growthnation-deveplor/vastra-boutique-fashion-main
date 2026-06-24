@@ -88,6 +88,11 @@ export const Navbar: React.FC = () => {
 
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur-xl">
+      {/* Announcement Bar */}
+      <div className="bg-[#2F1B12] text-[#E5D5C5] text-[10px] sm:text-xs py-2 px-4 text-center font-bold tracking-widest flex items-center justify-center gap-2 uppercase">
+        <span>🚚 Free Shipping on Orders Above ₹1999</span>
+      </div>
+
       <div className="container-shell flex items-center justify-between py-4">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-3">

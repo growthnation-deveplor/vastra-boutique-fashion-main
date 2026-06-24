@@ -192,7 +192,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode; initialProduct
       discount = cartSubtotal * COUPONS[couponCode.toUpperCase()];
     }
 
-    const shipping = cartSubtotal > 999 || cartSubtotal === 0 ? 0 : 99; // Free shipping above ₹999
+    const shipping = cartSubtotal > 1999 || cartSubtotal === 0 ? 0 : 99; // Free shipping above ₹1999
     const tax = Math.round(cartSubtotal * 0.05); // 5% GST
     const total = Math.round(cartSubtotal - discount + shipping + tax);
 

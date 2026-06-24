@@ -17,7 +17,7 @@ export interface Product {
   description: string;
   rating: number;
   reviews: number;
-  badge: "trending" | "new" | "sale" | "hot" | null | string;
+  isFeatured?: boolean;
   inStock: boolean;
 }
 
